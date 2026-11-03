@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
   rewrites: () => [
     {
       source: "/api",
-      destination: "wuod-api.hexagonn.my.id",
+      destination: "https://wuod-api.hexagonn.my.id",
     },
   ],
 };
