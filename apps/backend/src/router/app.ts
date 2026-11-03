@@ -1,19 +1,10 @@
 import { Hono } from "hono";
 import type { HonoOptions } from "hono/hono-base";
 
-export type BackendEnv = {
-  Bindings: {
-    SERVER_API_URL?: string;
-  };
-  //  Variables: AuthType & {
-  //    account: typeof account.$inferSelect & {
-  //      session: AuthType["session"];
-  //    };
-  //  };
-};
+import type { AppEnv } from "@/env";
 
-export function createHono(
-  options?: HonoOptions<BackendEnv>,
-) {
-  return new Hono<BackendEnv>(options)
+export type BackendEnv = AppEnv;
+
+export function createHono(options?: HonoOptions<AppEnv>) {
+  return new Hono<AppEnv>(options);
 }

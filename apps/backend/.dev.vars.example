@@ -1,0 +1,26 @@
+# Copy to `.dev.vars` and fill in. Never commit `.dev.vars`.
+# Neon Postgres connection string (pooled, e.g.
+# postgresql://user:pass@ep-xxx-pooler.region.aws.neon.tech/neondb?sslmode=require)
+DATABASE_URL=""
+
+# Public base URL of the auth handler, including the `/api` base path.
+# Local: http://localhost:8787/api/auth - Production: https://api.example.com/api/auth
+BETTER_AUTH_URL="http://localhost:8787/api/auth"
+
+# 32+ random chars: `openssl rand -base64 32`
+BETTER_AUTH_SECRET=""
+
+# Frontend origin allowed to send credentialed requests.
+WEB_ORIGIN="http://localhost:3000"
+
+# OpenAPI server URL. Defaults to "/api".
+# SERVER_API_URL="https://api.example.com/api"
+
+# OpenRouter (https://openrouter.ai/keys). Tanpa kunci ini chatbot memakai jawaban fallback.
+OPENROUTER_API_KEY=""
+OPENROUTER_MODEL="google/gemma-4-31b-it:free"
+
+# Dipakai oleh `bun run db:seed` untuk membuat akun admin pertama.
+SEED_ADMIN_EMAIL="admin@wuod.local"
+SEED_ADMIN_PASSWORD="Admin12345!"
+SEED_ADMIN_NAME="Administrator WUOD"

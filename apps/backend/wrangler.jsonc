@@ -3,6 +3,7 @@
   "name": "wuod-be",
   "main": "src/index.ts",
   "compatibility_date": "2026-09-15",
+  "compatibility_flags": ["nodejs_compat"],
   "upload_source_maps": true,
   "minify": true,
   "keep_vars": true,
@@ -12,36 +13,16 @@
       "invocation_logs": true,
     },
   },
-  // "compatibility_flags": [
-  //   "nodejs_compat"
-  // ],
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
-  // "r2_buckets": [
-  //   {
-  //     "binding": "MY_BUCKET",
-  //     "bucket_name": "my-bucket"
-  //   }
-  // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
-  // "ai": {
-  //   "binding": "AI"
-  // },
-  // "observability": {
-  //   "enabled": true,
-  //   "head_sampling_rate": 1
-  // }
+  "vars": {
+    "APP_NAME": "Website Edukasi Anti Narkoba",
+    "WEB_ORIGIN": "http://localhost:3000",
+    "OPENROUTER_MODEL": "google/gemma-4-31b-it:free",
+  },
+  "r2_buckets": [
+    {
+      "binding": "MEDIA_BUCKET",
+      "bucket_name": "wuod-media",
+      "preview_bucket_name": "wuod-media-dev",
+    },
+  ],
 }

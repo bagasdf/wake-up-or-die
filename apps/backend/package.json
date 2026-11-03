@@ -4,19 +4,32 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "check-types": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "bun --env-file=.dev.vars x drizzle-kit migrate",
+    "db:push": "bun --env-file=.dev.vars x drizzle-kit push",
+    "db:studio": "bun --env-file=.dev.vars x drizzle-kit studio",
+    "db:seed": "bun --env-file=.dev.vars run src/db/seed.ts",
+    "auth:generate": "better-auth generate --config src/lib/auth.ts --output src/db/auth-schema.ts -y"
   },
   "exports": {
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.7.15",
     "@hono/zod-validator": "^0.9.1",
+    "@neondatabase/serverless": "^1.2.0",
     "@scalar/hono-api-reference": "^0.12.2",
+    "better-auth": "^1.7.15",
+    "drizzle-orm": "^0.45.4",
     "hono": "^4.13.8",
     "hono-openapi": "^1.3.3",
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "auth": "^1.7.15",
+    "drizzle-kit": "^0.31.11",
     "wrangler": "^4.110.0"
   }
 }
