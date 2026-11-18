@@ -88,6 +88,33 @@
       "secondary": "Baca artikel"
     }
   },
+  "calculator": {
+    "title": "kalkulator dampak",
+    "subtitle": "Simulasi kerugian finansial akibat adiksi, dalam angka yang jujur.",
+    "monthlySpend": "Pengeluaran per bulan (IDR)",
+    "durationYears": "Durasi (tahun)",
+    "monthlyIncome": "Penghasilan per bulan (IDR, opsional)",
+    "age": "Usia (opsional)",
+    "submit": "Hitung",
+    "error": "Gagal menghitung.",
+    "retry": "Coba lagi",
+    "total": "Total dampak",
+    "breakdown": "Rincian",
+    "spent": "Uang terpakai",
+    "investment": "Keuntungan investasi hilang",
+    "career": "Kerugian karier",
+    "health": "Biaya kesehatan",
+    "legal": "Biaya hukum",
+    "equivalents": "Setara dengan",
+    "motorcycles": "Motor",
+    "laptops": "Laptop",
+    "schoolSemesters": "Semester sekolah",
+    "familyTrips": "Liburan keluarga",
+    "risk": { "rendah": "Rendah", "sedang": "Sedang", "tinggi": "Tinggi" },
+    "riskLabel": "Level risiko",
+    "recommendations": "Rekomendasi",
+    "disclaimer": "Estimasi konservatif untuk edukasi, bukan nasihat keuangan atau hukum."
+  },
   "quiz": {
     "title": "kuis interaktif",
     "subtitle": "Uji pemahamanmu tentang bahaya narkoba.",
@@ -112,6 +139,51 @@
       "retry": "Ulangi kuis",
       "certificate": "Sertifikat diterbitkan"
     }
+  },
+  "directory": {
+    "title": "direktori bantuan",
+    "subtitle": "Nomor darurat, BNN, dan layanan rehabilitasi terdekat.",
+    "all": "Semua",
+    "searchPlaceholder": "Cari nama atau kota…",
+    "categories": {
+      "darurat": "Darurat",
+      "bnn": "BNN",
+      "rehabilitasi": "Rehabilitasi",
+      "hotline": "Hotline",
+      "lainnya": "Lainnya"
+    },
+    "empty": "Tidak ada kontak.",
+    "error": "Gagal memuat kontak.",
+    "retry": "Coba lagi",
+    "call": "Telepon",
+    "whatsapp": "WhatsApp",
+    "hours24": "24 jam",
+    "verified": "Terverifikasi"
+  },
+  "report": {
+    "title": "laporan / konsultasi anonim",
+    "subtitle": "Saluran aman. Pesannya hanya untuk tim penanganan.",
+    "category": "Kategori",
+    "categories": { "konsultasi": "Konsultasi", "pengaduan": "Pengaduan" },
+    "subject": "Subjek",
+    "message": "Pesan",
+    "contactMethod": "Metode kontak (opsional)",
+    "methods": { "whatsapp": "WhatsApp", "email": "Email", "telepon": "Telepon", "tidak_ada": "Tidak ada" },
+    "contactValue": "Nilai kontak",
+    "submit": "Kirim",
+    "success": "Terkirim. Kode tiketmu: {code}",
+    "error": "Gagal mengirim.",
+    "retry": "Coba lagi"
+  },
+  "chat": {
+    "title": "chatbot ai 24/7",
+    "subtitle": "Tanya apa saja soal gejala awal adiksi dan langkah bantuan.",
+    "placeholder": "Tulis pesan…",
+    "send": "Kirim",
+    "empty": "Belum ada pesan.",
+    "error": "Gagal mengirim pesan.",
+    "welcome": "Halo, aku asisten edukasi. Ceritakan apa yang kamu alami.",
+    "disclaimer": "Jawaban AI bukan pengganti nasihat medis."
   },
   "articles": {
     "title": "artikel edukasi",

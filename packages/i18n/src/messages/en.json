@@ -88,6 +88,33 @@
       "secondary": "Read articles"
     }
   },
+  "calculator": {
+    "title": "impact calculator",
+    "subtitle": "Simulate the financial loss of addiction, in honest numbers.",
+    "monthlySpend": "Monthly spend (IDR)",
+    "durationYears": "Duration (years)",
+    "monthlyIncome": "Monthly income (IDR, optional)",
+    "age": "Age (optional)",
+    "submit": "Calculate",
+    "error": "Calculation failed.",
+    "retry": "Try again",
+    "total": "Total impact",
+    "breakdown": "Breakdown",
+    "spent": "Money spent",
+    "investment": "Lost investment gains",
+    "career": "Career loss",
+    "health": "Health cost",
+    "legal": "Legal cost",
+    "equivalents": "Equivalent to",
+    "motorcycles": "Motorcycles",
+    "laptops": "Laptops",
+    "schoolSemesters": "School semesters",
+    "familyTrips": "Family trips",
+    "risk": { "rendah": "Low", "sedang": "Medium", "tinggi": "High" },
+    "riskLabel": "Risk level",
+    "recommendations": "Recommendations",
+    "disclaimer": "Conservative estimate for education, not financial or legal advice."
+  },
   "quiz": {
     "title": "interactive quiz",
     "subtitle": "Test your understanding of drug dangers.",
@@ -112,6 +139,51 @@
       "retry": "Retry quiz",
       "certificate": "Certificate issued"
     }
+  },
+  "directory": {
+    "title": "help directory",
+    "subtitle": "Emergency numbers, BNN offices, and nearby rehab services.",
+    "all": "All",
+    "searchPlaceholder": "Search name or city…",
+    "categories": {
+      "darurat": "Emergency",
+      "bnn": "BNN",
+      "rehabilitasi": "Rehab",
+      "hotline": "Hotline",
+      "lainnya": "Other"
+    },
+    "empty": "No contacts.",
+    "error": "Failed to load contacts.",
+    "retry": "Try again",
+    "call": "Call",
+    "whatsapp": "WhatsApp",
+    "hours24": "24h",
+    "verified": "Verified"
+  },
+  "report": {
+    "title": "anonymous report / consultation",
+    "subtitle": "A safe channel. Your message goes only to the handling team.",
+    "category": "Category",
+    "categories": { "konsultasi": "Consultation", "pengaduan": "Report" },
+    "subject": "Subject",
+    "message": "Message",
+    "contactMethod": "Contact method (optional)",
+    "methods": { "whatsapp": "WhatsApp", "email": "Email", "telepon": "Phone", "tidak_ada": "None" },
+    "contactValue": "Contact value",
+    "submit": "Send",
+    "success": "Sent. Your ticket code: {code}",
+    "error": "Failed to send.",
+    "retry": "Try again"
+  },
+  "chat": {
+    "title": "ai chatbot 24/7",
+    "subtitle": "Ask anything about early addiction symptoms and help steps.",
+    "placeholder": "Type a message…",
+    "send": "Send",
+    "empty": "No messages yet.",
+    "error": "Failed to send message.",
+    "welcome": "Hi, I'm the education assistant. Tell me what you're experiencing.",
+    "disclaimer": "AI answers are not a substitute for medical advice."
   },
   "articles": {
     "title": "educational articles",
