@@ -88,6 +88,31 @@
       "secondary": "Baca artikel"
     }
   },
+  "quiz": {
+    "title": "kuis interaktif",
+    "subtitle": "Uji pemahamanmu tentang bahaya narkoba.",
+    "questions": "{count} soal",
+    "pass": "Skor lulus {score}%",
+    "difficulty": { "easy": "Mudah", "medium": "Sedang", "hard": "Sulit" },
+    "start": "Mulai kuis",
+    "empty": "Belum ada kuis.",
+    "error": "Gagal memuat kuis.",
+    "retry": "Coba lagi",
+    "next": "Soal berikutnya",
+    "submit": "Kirim jawaban",
+    "back": "Kembali ke kuis",
+    "question": "Pertanyaan {n}",
+    "result": {
+      "title": "hasil kuis",
+      "score": "Skor {score}%",
+      "passed": "Kamu lulus!",
+      "failed": "Belum lulus, coba lagi.",
+      "correct": "{correct} dari {total} benar",
+      "review": "Pembahasan",
+      "retry": "Ulangi kuis",
+      "certificate": "Sertifikat diterbitkan"
+    }
+  },
   "articles": {
     "title": "artikel edukasi",
     "subtitle": "Fakta singkat, mudah dipahami, tanpa menghakimi.",

@@ -88,6 +88,31 @@
       "secondary": "Read articles"
     }
   },
+  "quiz": {
+    "title": "interactive quiz",
+    "subtitle": "Test your understanding of drug dangers.",
+    "questions": "{count} questions",
+    "pass": "Passing score {score}%",
+    "difficulty": { "easy": "Easy", "medium": "Medium", "hard": "Hard" },
+    "start": "Start quiz",
+    "empty": "No quizzes yet.",
+    "error": "Failed to load quizzes.",
+    "retry": "Try again",
+    "next": "Next question",
+    "submit": "Submit answers",
+    "back": "Back to quizzes",
+    "question": "Question {n}",
+    "result": {
+      "title": "quiz result",
+      "score": "Score {score}%",
+      "passed": "You passed!",
+      "failed": "Not passed, try again.",
+      "correct": "{correct} of {total} correct",
+      "review": "Review",
+      "retry": "Retry quiz",
+      "certificate": "Certificate issued"
+    }
+  },
   "articles": {
     "title": "educational articles",
     "subtitle": "Short facts, easy to understand, no judgment.",
