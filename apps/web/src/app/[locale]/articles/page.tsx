@@ -7,3 +7,5 @@ export default function ArticlesPage() {
     </main>
   );
 }
+
+export const instant = false;

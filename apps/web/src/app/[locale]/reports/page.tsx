@@ -7,3 +7,5 @@ export default function ReportsPage() {
     </main>
   );
 }
+
+export const instant = false;

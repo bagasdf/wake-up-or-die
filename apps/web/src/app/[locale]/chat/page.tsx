@@ -7,3 +7,5 @@ export default function ChatPage() {
     </main>
   );
 }
+
+export const instant = false;

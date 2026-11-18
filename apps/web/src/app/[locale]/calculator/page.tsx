@@ -7,3 +7,5 @@ export default function CalculatorPage() {
     </main>
   );
 }
+
+export const instant = false;

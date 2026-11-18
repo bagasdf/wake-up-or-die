@@ -11,3 +11,5 @@ export default async function QuizAttemptPage({ params }: Props) {
     </main>
   );
 }
+
+export const instant = false;

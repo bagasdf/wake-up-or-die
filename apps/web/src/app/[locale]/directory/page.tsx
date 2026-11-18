@@ -7,3 +7,5 @@ export default function DirectoryPage() {
     </main>
   );
 }
+
+export const instant = false;

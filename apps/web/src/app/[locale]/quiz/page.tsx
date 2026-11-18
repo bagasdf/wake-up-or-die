@@ -7,3 +7,5 @@ export default function QuizPage() {
     </main>
   );
 }
+
+export const instant = false;
