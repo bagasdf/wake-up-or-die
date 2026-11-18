@@ -155,7 +155,7 @@ export function ArticleList() {
                   <Image
                     src={
                       article.coverImageUrl ??
-                      `https://picsum.photos/seed/wuod-${article.slug}/800/500`
+                      posters[article.slug.length % posters.length]
                     }
                     alt={article.title}
                     fill

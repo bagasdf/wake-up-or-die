@@ -158,7 +158,7 @@ export function ArticleDetail({ slug }: { slug: string }) {
         <Image
           src={
             article.coverImageUrl ??
-            `https://picsum.photos/seed/wuod-${article.slug}/1200/675`
+            posters[article.slug.length % posters.length]
           }
           alt={article.title}
           fill
