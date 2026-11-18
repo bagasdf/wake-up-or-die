@@ -31,8 +31,12 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   rewrites: () => [
     {
-      source: "/api",
-      destination: "https://wuod-api.hexagonn.my.id",
+      source: "/api/auth/:path*",
+      destination: "https://wuod-api.hexagonn.my.id/auth/:path*",
+    },
+    {
+      source: "/api/:path*",
+      destination: "https://wuod-api.hexagonn.my.id/v1/:path*",
     },
   ],
 };
