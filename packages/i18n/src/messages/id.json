@@ -8,7 +8,9 @@
     "report": "Laporan",
     "chat": "Chat",
     "menu": "Menu",
-    "close": "Tutup"
+    "close": "Tutup",
+    "badges": "Lencana",
+    "gallery": "Galeri"
   },
   "common": {
     "skipToContent": "Lewati ke konten",
@@ -262,5 +264,58 @@
     "score": "Skor {score}%",
     "passed": "Lulus",
     "failed": "Belum lulus"
+  },
+  "badges": {
+    "title": "lencana & sertifikat",
+    "subtitle": "Poin, lencana, dan sertifikat digital dari belajarmu.",
+    "earned": "Diraih",
+    "notEarned": "Belum",
+    "points": "poin",
+    "earnedBy": "{count} orang",
+    "certificates": "Sertifikatku",
+    "download": "Unduh",
+    "verify": "Verifikasi",
+    "issuedAt": "Diterbitkan",
+    "empty": "Belum ada lencana.",
+    "certsEmpty": "Belum ada sertifikat.",
+    "loginHint": "Masuk untuk melihat lencana dan sertifikatmu.",
+    "code": "Kode"
+  },
+  "gallery": {
+    "title": "galeri poster",
+    "subtitle": "Poster dan infografis gratis untuk bahan kampanye.",
+    "download": "Unduh",
+    "all": "Semua",
+    "types": {
+      "poster": "Poster",
+      "infografis": "Infografis",
+      "video": "Video",
+      "lainnya": "Lainnya"
+    },
+    "empty": "Belum ada media.",
+    "error": "Gagal memuat galeri."
+  },
+  "admin": {
+    "title": "panel admin",
+    "unauthorized": "Hanya admin yang bisa mengakses panel ini.",
+    "articles": "Artikel",
+    "comments": "Komentar",
+    "approve": "Setujui",
+    "reject": "Tolak",
+    "status": {
+      "pending": "Menunggu",
+      "approved": "Disetujui",
+      "rejected": "Ditolak",
+      "draft": "Draft",
+      "published": "Terbit",
+      "archived": "Diarsipkan"
+    },
+    "author": "Penulis",
+    "content": "Isi",
+    "article": "Artikel",
+    "empty": "Tidak ada data.",
+    "error": "Gagal memuat panel.",
+    "retry": "Coba lagi",
+    "search": "Cari judul atau slug…"
   }
 }

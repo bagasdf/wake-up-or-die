@@ -12,6 +12,8 @@ const links = [
   { href: "/directory", key: "directory" },
   { href: "/reports", key: "report" },
   { href: "/chat", key: "chat" },
+  { href: "/badges", key: "badges" },
+  { href: "/gallery", key: "gallery" },
 ] as const;
 
 export function Footer({ locale }: { locale: Locale }) {

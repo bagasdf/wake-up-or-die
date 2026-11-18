@@ -8,7 +8,9 @@
     "report": "Report",
     "chat": "Chat",
     "menu": "Menu",
-    "close": "Close"
+    "close": "Close",
+    "badges": "Badges",
+    "gallery": "Gallery"
   },
   "common": {
     "skipToContent": "Skip to content",
@@ -262,5 +264,58 @@
     "score": "Score {score}%",
     "passed": "Passed",
     "failed": "Not passed"
+  },
+  "badges": {
+    "title": "badges & certificates",
+    "subtitle": "Points, badges, and digital certificates from your learning.",
+    "earned": "Earned",
+    "notEarned": "Locked",
+    "points": "points",
+    "earnedBy": "{count} people",
+    "certificates": "My certificates",
+    "download": "Download",
+    "verify": "Verify",
+    "issuedAt": "Issued",
+    "empty": "No badges yet.",
+    "certsEmpty": "No certificates yet.",
+    "loginHint": "Sign in to see your badges and certificates.",
+    "code": "Code"
+  },
+  "gallery": {
+    "title": "poster gallery",
+    "subtitle": "Free posters and infographics for campaign material.",
+    "download": "Download",
+    "all": "All",
+    "types": {
+      "poster": "Poster",
+      "infografis": "Infographic",
+      "video": "Video",
+      "lainnya": "Other"
+    },
+    "empty": "No media yet.",
+    "error": "Failed to load gallery."
+  },
+  "admin": {
+    "title": "admin panel",
+    "unauthorized": "Admins only.",
+    "articles": "Articles",
+    "comments": "Comments",
+    "approve": "Approve",
+    "reject": "Reject",
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "author": "Author",
+    "content": "Content",
+    "article": "Article",
+    "empty": "No data.",
+    "error": "Failed to load panel.",
+    "retry": "Try again",
+    "search": "Search title or slug…"
   }
 }
