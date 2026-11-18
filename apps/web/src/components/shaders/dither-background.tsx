@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { type CSSProperties, useEffect, useRef } from "react";
 
 export type DitherColor = string | [number, number, number];
 export type DitherMode =
@@ -370,7 +370,7 @@ const link = (
 };
 
 const toLinear = (value: number) =>
-  value <= 0.04045 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
+  value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
 
 const Dither = ({
   waveSpeed = 0.05,

@@ -3,7 +3,6 @@
 import { MoonIcon, SunIcon } from "@phosphor-icons/react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { flushSync } from "react-dom";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
@@ -17,14 +16,10 @@ export function ThemeToggle() {
   const isDark = resolvedTheme === "dark";
 
   const toggleTheme = () => {
-    const next = isDark ? "light" : "dark";
-    if (!document.startViewTransition) {
-      setTheme(next);
-      return;
-    }
-    document.startViewTransition(() => {
-      flushSync(() => setTheme(next));
-    });
+    const root = document.documentElement;
+    root.classList.add("theme-transition");
+    setTheme(isDark ? "light" : "dark");
+    window.setTimeout(() => root.classList.remove("theme-transition"), 300);
   };
 
   return (
