@@ -6,8 +6,15 @@ import { Link } from "@/i18n/navigation";
 
 import { useHome } from "./home-data";
 
+const posters = [
+  "/static/images/poster-1.png",
+  "/static/images/poster-2.png",
+  "/static/images/poster-3.png",
+  "/static/images/poster-4.png"
+];
+
 function cover(slug: string, url: string | null) {
-  return url ?? `https://picsum.photos/seed/wuod-${slug}/800/500`;
+  return url ?? posters[slug.length % posters.length];
 }
 
 export function ArticlesPreview() {

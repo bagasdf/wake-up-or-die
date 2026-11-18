@@ -7,6 +7,13 @@ import { Link } from "@/i18n/navigation";
 
 const categories = ["jenis", "dampak", "pencegahan", "hukum", "umum"] as const;
 
+const posters = [
+  "/static/images/poster-1.png",
+  "/static/images/poster-2.png",
+  "/static/images/poster-3.png",
+  "/static/images/poster-4.png"
+];
+
 type Article = {
   slug: string;
   title: string;
