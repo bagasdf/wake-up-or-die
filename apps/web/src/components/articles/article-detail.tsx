@@ -1,10 +1,10 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
-import { Link } from "@/i18n/navigation";
-import { useEffect, useState } from "react";
 import { ArrowLeft, ChatCircle, PaperPlaneRight } from "@phosphor-icons/react";
+import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { Link } from "@/i18n/navigation";
 
 type Article = {
   slug: string;
@@ -32,7 +32,9 @@ export function ArticleDetail({ slug }: { slug: string }) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
-  const [state, setState] = useState<"loading" | "error" | "ready" | "notfound">("loading");
+  const [state, setState] = useState<
+    "loading" | "error" | "ready" | "notfound"
+  >("loading");
   const [sending, setSending] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
 
@@ -40,7 +42,9 @@ export function ArticleDetail({ slug }: { slug: string }) {
     let alive = true;
     setState("loading");
     fetch(`/api/articles/${slug}`)
-      .then((res) => (res.ok ? res.json() : res.status === 404 ? null : Promise.reject()))
+      .then((res) =>
+        res.ok ? res.json() : res.status === 404 ? null : Promise.reject(),
+      )
       .then((data: Article | null) => {
         if (!alive) return;
         if (!data) {
@@ -51,7 +55,9 @@ export function ArticleDetail({ slug }: { slug: string }) {
         setState("ready");
         return fetch(`/api/articles/${slug}/comments?perPage=20`)
           .then((res) => (res.ok ? res.json() : { items: [] }))
-          .then((c: { items: Comment[] }) => alive && setComments(c.items ?? []))
+          .then(
+            (c: { items: Comment[] }) => alive && setComments(c.items ?? []),
+          )
           .catch(() => {});
       })
       .catch(() => {
@@ -69,7 +75,10 @@ export function ArticleDetail({ slug }: { slug: string }) {
     fetch(`/api/articles/${slug}/comments`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ authorName: name.trim() || undefined, content: content.trim() }),
+      body: JSON.stringify({
+        authorName: name.trim() || undefined,
+        content: content.trim(),
+      }),
     })
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((comment: Comment) => {
@@ -106,7 +115,10 @@ export function ArticleDetail({ slug }: { slug: string }) {
     return (
       <section className="mx-3 md:m-12 mb-6 rounded-[2rem] border px-8 py-12">
         <p className="text-sm text-muted-foreground">{t("notFound")}</p>
-        <Link href="/articles" className="mt-4 inline-flex items-center gap-1.5 text-sm text-primary hover:underline">
+        <Link
+          href="/articles"
+          className="mt-4 inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+        >
           <ArrowLeft className="size-4" /> {t("back")}
         </Link>
       </section>
@@ -129,13 +141,18 @@ export function ArticleDetail({ slug }: { slug: string }) {
           {t(`categories.${article.category}`)}
         </span>{" "}
         {article.publishedAt
-          ? new Date(article.publishedAt).toLocaleDateString(locale, { dateStyle: "medium" })
+          ? new Date(article.publishedAt).toLocaleDateString(locale, {
+              dateStyle: "medium",
+            })
           : ""}{" "}
         · {t("minutes", { minutes: article.readingMinutes })}
       </p>
       <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-[1.25rem] bg-muted">
         <Image
-          src={article.coverImageUrl ?? `https://picsum.photos/seed/wuod-${article.slug}/1200/675`}
+          src={
+            article.coverImageUrl ??
+            `https://picsum.photos/seed/wuod-${article.slug}/1200/675`
+          }
           alt={article.title}
           fill
           sizes="(min-width: 768px) 70vw, 100vw"
@@ -150,7 +167,9 @@ export function ArticleDetail({ slug }: { slug: string }) {
 
       {article.related.length > 0 ? (
         <div className="mt-12">
-          <h2 className="font-heading text-xl font-semibold tracking-tight">{t("related")}</h2>
+          <h2 className="font-heading text-xl font-semibold tracking-tight">
+            {t("related")}
+          </h2>
           <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
             {article.related.map((item) => (
               <Link
@@ -161,7 +180,9 @@ export function ArticleDetail({ slug }: { slug: string }) {
                 <h3 className="font-heading text-base font-semibold tracking-tight">
                   {item.title}
                 </h3>
-                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{item.excerpt}</p>
+                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                  {item.excerpt}
+                </p>
               </Link>
             ))}
           </div>
@@ -170,18 +191,25 @@ export function ArticleDetail({ slug }: { slug: string }) {
 
       <div className="mt-12 max-w-[40rem]">
         <h2 className="flex items-center gap-2 font-heading text-xl font-semibold tracking-tight">
-          <ChatCircle className="size-5" weight="duotone" /> {t("comments.title")}
+          <ChatCircle className="size-5" weight="duotone" />{" "}
+          {t("comments.title")}
         </h2>
-        <p className="mt-1 text-sm text-muted-foreground">{t("comments.subtitle")}</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {t("comments.subtitle")}
+        </p>
 
         <ul className="mt-6 divide-y divide-border">
           {comments.length === 0 ? (
-            <li className="py-4 text-sm text-muted-foreground">{t("comments.empty")}</li>
+            <li className="py-4 text-sm text-muted-foreground">
+              {t("comments.empty")}
+            </li>
           ) : (
             comments.map((comment) => (
               <li key={comment.id} className="py-4">
                 <p className="text-sm font-semibold">{comment.authorName}</p>
-                <p className="mt-1 text-sm leading-relaxed">{comment.content}</p>
+                <p className="mt-1 text-sm leading-relaxed">
+                  {comment.content}
+                </p>
                 <p className="mt-1 font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
                   {new Date(comment.createdAt).toLocaleDateString(locale, {
                     dateStyle: "medium",
@@ -223,12 +251,13 @@ export function ArticleDetail({ slug }: { slug: string }) {
             disabled={sending}
             className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px disabled:opacity-50"
           >
-            <PaperPlaneRight className="size-4" weight="bold" /> {t("comments.submit")}
+            <PaperPlaneRight className="size-4" weight="bold" />{" "}
+            {t("comments.submit")}
           </button>
           {notice ? (
-            <p className="text-sm text-muted-foreground" role="status">
+            <div className="text-sm text-muted-foreground" role="status">
               {notice}
-            </p>
+            </div>
           ) : null}
         </form>
       </div>

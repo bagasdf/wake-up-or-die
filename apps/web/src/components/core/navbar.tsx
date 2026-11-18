@@ -1,6 +1,6 @@
 "use client";
 
-import { type Locale, locales } from "@wuod/i18n";
+import { locales } from "@wuod/i18n";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";

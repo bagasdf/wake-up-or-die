@@ -1,7 +1,7 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Link } from "@/i18n/navigation";
 
@@ -61,7 +61,10 @@ export function ArticleList() {
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data: { items: Article[]; total: number }) => {
         setItems((prev) => [...prev, ...data.items]);
-        setHasMore(data.items.length > 0 && items.length + data.items.length < data.total);
+        setHasMore(
+          data.items.length > 0 &&
+            items.length + data.items.length < data.total,
+        );
         setPage(next);
       })
       .catch(() => {});
@@ -72,7 +75,9 @@ export function ArticleList() {
       <h1 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">
         {t("title")}
       </h1>
-      <p className="mt-3 max-w-[65ch] text-sm text-muted-foreground">{t("subtitle")}</p>
+      <p className="mt-3 max-w-[65ch] text-sm text-muted-foreground">
+        {t("subtitle")}
+      </p>
 
       <div className="mt-8 flex flex-wrap gap-2">
         <button
@@ -107,14 +112,21 @@ export function ArticleList() {
       {error ? (
         <p className="mt-8 text-sm text-destructive">
           {t("error")}{" "}
-          <button type="button" onClick={() => setCategory(category)} className="underline">
+          <button
+            type="button"
+            onClick={() => setCategory(category)}
+            className="underline"
+          >
             {t("retry")}
           </button>
         </p>
       ) : loading && items.length === 0 ? (
         <div className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="animate-pulse rounded-[1.25rem] border p-5">
+            <div
+              key={`skeleton-${i}`}
+              className="animate-pulse rounded-[1.25rem] border p-5"
+            >
               <div className="aspect-[16/10] rounded-xl bg-muted" />
               <div className="mt-4 h-4 w-2/3 rounded bg-muted" />
               <div className="mt-2 h-3 w-full rounded bg-muted" />
@@ -134,7 +146,10 @@ export function ArticleList() {
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                   <Image
-                    src={article.coverImageUrl ?? `https://picsum.photos/seed/wuod-${article.slug}/800/500`}
+                    src={
+                      article.coverImageUrl ??
+                      `https://picsum.photos/seed/wuod-${article.slug}/800/500`
+                    }
                     alt={article.title}
                     fill
                     sizes="(min-width: 768px) 33vw, 100vw"
@@ -153,9 +168,12 @@ export function ArticleList() {
                   </p>
                   <p className="mt-3 font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
                     {article.publishedAt
-                      ? new Date(article.publishedAt).toLocaleDateString(locale, {
-                          dateStyle: "medium",
-                        })
+                      ? new Date(article.publishedAt).toLocaleDateString(
+                          locale,
+                          {
+                            dateStyle: "medium",
+                          },
+                        )
                       : ""}{" "}
                     · {t("minutes", { minutes: article.readingMinutes })}
                   </p>
