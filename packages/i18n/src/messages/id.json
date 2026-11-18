@@ -296,26 +296,25 @@
     "error": "Gagal memuat galeri."
   },
   "admin": {
-    "title": "panel admin",
+    "title": "Judul",
     "unauthorized": "Hanya admin yang bisa mengakses panel ini.",
     "articles": "Artikel",
     "comments": "Komentar",
     "approve": "Setujui",
     "reject": "Tolak",
-    "status": {
-      "pending": "Menunggu",
-      "approved": "Disetujui",
-      "rejected": "Ditolak",
-      "draft": "Draft",
-      "published": "Terbit",
-      "archived": "Diarsipkan"
-    },
+    "status": "Status",
     "author": "Penulis",
     "content": "Isi",
     "article": "Artikel",
     "empty": "Tidak ada data.",
     "error": "Gagal memuat panel.",
     "retry": "Coba lagi",
-    "search": "Cari judul atau slug…"
+    "search": "Cari judul atau slug…",
+    "newArticle": "Artikel baru",
+    "create": "Buat",
+    "excerpt": "Ringkasan",
+    "category": "Kategori",
+    "created": "Artikel dibuat.",
+    "formError": "Gagal membuat artikel."
   }
 }

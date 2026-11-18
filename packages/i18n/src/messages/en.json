@@ -296,26 +296,25 @@
     "error": "Failed to load gallery."
   },
   "admin": {
-    "title": "admin panel",
+    "title": "Title",
     "unauthorized": "Admins only.",
     "articles": "Articles",
     "comments": "Comments",
     "approve": "Approve",
     "reject": "Reject",
-    "status": {
-      "pending": "Pending",
-      "approved": "Approved",
-      "rejected": "Rejected",
-      "draft": "Draft",
-      "published": "Published",
-      "archived": "Archived"
-    },
+    "status": "Status",
     "author": "Author",
     "content": "Content",
     "article": "Article",
     "empty": "No data.",
     "error": "Failed to load panel.",
     "retry": "Try again",
-    "search": "Search title or slug…"
+    "search": "Search title or slug…",
+    "newArticle": "New article",
+    "create": "Create",
+    "excerpt": "Excerpt",
+    "category": "Category",
+    "created": "Article created.",
+    "formError": "Failed to create article."
   }
 }

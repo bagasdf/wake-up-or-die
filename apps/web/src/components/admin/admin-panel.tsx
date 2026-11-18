@@ -1,10 +1,16 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { Check, Shield, X } from "@phosphor-icons/react";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
-type Article = { id: string; title: string; slug: string; status: string; category: string };
+type Article = {
+  id: string;
+  title: string;
+  slug: string;
+  status: string;
+  category: string;
+};
 type Comment = {
   id: string;
   authorName: string;
@@ -21,6 +27,16 @@ export function AdminPanel() {
   const [articles, setArticles] = useState<Article[] | null>(null);
   const [comments, setComments] = useState<Comment[] | null>(null);
   const [error, setError] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [draft, setDraft] = useState({
+    title: "",
+    excerpt: "",
+    content: "",
+    category: "umum",
+    status: "draft",
+  });
+  const [formError, setFormError] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
   const [query, setQuery] = useState("");
 
   const load = useCallback(() => {
@@ -56,10 +72,38 @@ export function AdminPanel() {
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((comment: Comment) =>
         setComments((prev) =>
-          prev ? prev.map((item) => (item.id === comment.id ? comment : item)) : prev,
+          prev
+            ? prev.map((item) => (item.id === comment.id ? comment : item))
+            : prev,
         ),
       )
       .catch(() => {});
+  };
+
+  const createArticle = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (creating) return;
+    setCreating(true);
+    setFormError(null);
+    fetch("/api/admin/articles", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(draft),
+    })
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((created: Article) => {
+        setArticles((prev) => (prev ? [created, ...prev] : prev));
+        setShowForm(false);
+        setDraft({
+          title: "",
+          excerpt: "",
+          content: "",
+          category: "umum",
+          status: "draft",
+        });
+      })
+      .catch(() => setFormError(t("formError")))
+      .finally(() => setCreating(false));
   };
 
   if (role === null && !error) {
@@ -116,49 +160,7 @@ export function AdminPanel() {
         </p>
       ) : null}
 
-      {tab === "comments" ? (
-        comments === null ? (
-          <div className="mt-8 space-y-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="animate-pulse h-20 rounded-[1.25rem] border" />
-            ))}
-          </div>
-        ) : comments.length === 0 ? (
-          <p className="mt-8 text-sm text-muted-foreground">{t("empty")}</p>
-        ) : (
-          <ul className="mt-8 divide-y divide-border">
-            {comments.map((comment) => (
-              <li key={comment.id} className="py-4">
-                <p className="text-sm font-semibold">
-                  {comment.authorName}{" "}
-                  <span className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
-                    {t(`status.${comment.status}`)} · {comment.articleTitle}
-                  </span>
-                </p>
-                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{comment.content}</p>
-                {comment.status === "pending" ? (
-                  <div className="mt-3 flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => moderate(comment.id, "approved")}
-                      className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-medium text-primary-foreground"
-                    >
-                      <Check className="size-4" weight="bold" /> {t("approve")}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => moderate(comment.id, "rejected")}
-                      className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border px-3 text-xs font-medium hover:border-destructive/50"
-                    >
-                      <X className="size-4" weight="bold" /> {t("reject")}
-                    </button>
-                  </div>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        )
-      ) : (
+      {tab === "articles" ? (
         <div className="mt-8">
           <input
             type="search"
@@ -168,6 +170,106 @@ export function AdminPanel() {
             aria-label={t("search")}
             className="h-9 w-full max-w-xs rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
           />
+          <button
+            type="button"
+            onClick={() => setShowForm((v) => !v)}
+            className="inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px"
+          >
+            {t("newArticle")}
+          </button>
+          {showForm ? (
+            <form
+              onSubmit={createArticle}
+              className="mt-4 grid grid-cols-1 gap-3 rounded-[1.25rem] border p-5 md:grid-cols-2"
+            >
+              <label className="block">
+                <span className="text-sm font-medium">{t("title")}</span>
+                <input
+                  required
+                  minLength={3}
+                  maxLength={200}
+                  value={draft.title}
+                  onChange={(e) =>
+                    setDraft((d) => ({ ...d, title: e.target.value }))
+                  }
+                  className="mt-1 h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
+                />
+              </label>
+              <label className="block">
+                <span className="text-sm font-medium">{t("category")}</span>
+                <select
+                  value={draft.category}
+                  onChange={(e) =>
+                    setDraft((d) => ({ ...d, category: e.target.value }))
+                  }
+                  className="mt-1 h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
+                >
+                  {["jenis", "dampak", "pencegahan", "hukum", "umum"].map(
+                    (cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </label>
+              <label className="block md:col-span-2">
+                <span className="text-sm font-medium">{t("excerpt")}</span>
+                <input
+                  required
+                  minLength={3}
+                  maxLength={300}
+                  value={draft.excerpt}
+                  onChange={(e) =>
+                    setDraft((d) => ({ ...d, excerpt: e.target.value }))
+                  }
+                  className="mt-1 h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
+                />
+              </label>
+              <label className="block md:col-span-2">
+                <span className="text-sm font-medium">{t("content")}</span>
+                <textarea
+                  required
+                  minLength={10}
+                  value={draft.content}
+                  onChange={(e) =>
+                    setDraft((d) => ({ ...d, content: e.target.value }))
+                  }
+                  className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
+                />
+              </label>
+              <label className="block">
+                <span className="text-sm font-medium">{t("status")}</span>
+                <select
+                  value={draft.status}
+                  onChange={(e) =>
+                    setDraft((d) => ({ ...d, status: e.target.value }))
+                  }
+                  className="mt-1 h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
+                >
+                  <option value="draft">{t("status.draft")}</option>
+                  <option value="published">{t("status.published")}</option>
+                </select>
+              </label>
+              <div className="flex items-end">
+                <button
+                  type="submit"
+                  disabled={creating}
+                  className="inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px disabled:opacity-50"
+                >
+                  {t("create")}
+                </button>
+              </div>
+              {formError ? (
+                <p
+                  className="text-sm text-destructive md:col-span-2"
+                  role="alert"
+                >
+                  {formError}
+                </p>
+              ) : null}
+            </form>
+          ) : null}
           {articles === null ? (
             <div className="mt-6 animate-pulse h-24 rounded-[1.25rem] border" />
           ) : (
@@ -175,12 +277,17 @@ export function AdminPanel() {
               {articles
                 .filter((article) =>
                   query.trim()
-                    ? article.title.toLowerCase().includes(query.toLowerCase()) ||
+                    ? article.title
+                        .toLowerCase()
+                        .includes(query.toLowerCase()) ||
                       article.slug.toLowerCase().includes(query.toLowerCase())
                     : true,
                 )
                 .map((article) => (
-                  <li key={article.id} className="flex items-center justify-between py-3 text-sm">
+                  <li
+                    key={article.id}
+                    className="flex items-center justify-between py-3 text-sm"
+                  >
                     <span className="truncate">{article.title}</span>
                     <span className="ml-4 shrink-0 font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
                       {t(`status.${article.status}`)} · {article.category}
@@ -190,6 +297,51 @@ export function AdminPanel() {
             </ul>
           )}
         </div>
+      ) : comments === null ? (
+        <div className="mt-8 space-y-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={`skeleton-${i}`}
+              className="animate-pulse h-20 rounded-[1.25rem] border"
+            />
+          ))}
+        </div>
+      ) : comments.length === 0 ? (
+        <p className="mt-8 text-sm text-muted-foreground">{t("empty")}</p>
+      ) : (
+        <ul className="mt-8 divide-y divide-border">
+          {comments.map((comment) => (
+            <li key={comment.id} className="py-4">
+              <p className="text-sm font-semibold">
+                {comment.authorName}{" "}
+                <span className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
+                  {t(`status.${comment.status}`)} · {comment.articleTitle}
+                </span>
+              </p>
+              <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                {comment.content}
+              </p>
+              {comment.status === "pending" ? (
+                <div className="mt-3 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => moderate(comment.id, "approved")}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-medium text-primary-foreground"
+                  >
+                    <Check className="size-4" weight="bold" /> {t("approve")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moderate(comment.id, "rejected")}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border px-3 text-xs font-medium hover:border-destructive/50"
+                  >
+                    <X className="size-4" weight="bold" /> {t("reject")}
+                  </button>
+                </div>
+              ) : null}
+            </li>
+          ))}
+        </ul>
       )}
     </section>
   );
