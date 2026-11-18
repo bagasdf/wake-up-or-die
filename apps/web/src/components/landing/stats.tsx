@@ -14,7 +14,7 @@ export function Stats() {
     { label: t("badges"), value: data?.stats.badges },
     {
       label: t("contacts"),
-      value: data?.emergencyContacts?.length ?? data?.stats.contacts,
+      value: data?.emergencyContacts?.length,
     },
   ];
 

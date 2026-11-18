@@ -87,5 +87,37 @@
       "primary": "Start quiz",
       "secondary": "Read articles"
     }
+  },
+  "articles": {
+    "title": "educational articles",
+    "subtitle": "Short facts, easy to understand, no judgment.",
+    "all": "All",
+    "searchPlaceholder": "Search articles…",
+    "categories": {
+      "jenis": "Types",
+      "dampak": "Impacts",
+      "pencegahan": "Prevention",
+      "hukum": "Law",
+      "umum": "General"
+    },
+    "empty": "No articles yet.",
+    "error": "Failed to load articles.",
+    "retry": "Try again",
+    "loadMore": "Load more",
+    "minutes": "{minutes} min read",
+    "related": "Related articles",
+    "notFound": "Article not found.",
+    "back": "Back to articles",
+    "comments": {
+      "title": "Comments",
+      "subtitle": "Keep it polite. Guest comments await moderation.",
+      "name": "Name (optional)",
+      "content": "Comment",
+      "submit": "Post comment",
+      "empty": "No comments yet.",
+      "pending": "Your comment is awaiting moderation.",
+      "error": "Failed to post comment.",
+      "loading": "Loading…"
+    }
   }
 }

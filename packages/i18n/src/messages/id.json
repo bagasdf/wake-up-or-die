@@ -87,5 +87,37 @@
       "primary": "Mulai kuis",
       "secondary": "Baca artikel"
     }
+  },
+  "articles": {
+    "title": "artikel edukasi",
+    "subtitle": "Fakta singkat, mudah dipahami, tanpa menghakimi.",
+    "all": "Semua",
+    "searchPlaceholder": "Cari artikel…",
+    "categories": {
+      "jenis": "Jenis",
+      "dampak": "Dampak",
+      "pencegahan": "Pencegahan",
+      "hukum": "Hukum",
+      "umum": "Umum"
+    },
+    "empty": "Belum ada artikel.",
+    "error": "Gagal memuat artikel.",
+    "retry": "Coba lagi",
+    "loadMore": "Muat lebih banyak",
+    "minutes": "{minutes} menit baca",
+    "related": "Artikel terkait",
+    "notFound": "Artikel tidak ditemukan.",
+    "back": "Kembali ke artikel",
+    "comments": {
+      "title": "Komentar",
+      "subtitle": "Diskusi sopan. Komentar tamu menunggu moderasi.",
+      "name": "Nama (opsional)",
+      "content": "Komentar",
+      "submit": "Kirim komentar",
+      "empty": "Belum ada komentar.",
+      "pending": "Komentarmu menunggu moderasi.",
+      "error": "Gagal mengirim komentar.",
+      "loading": "Memuat…"
+    }
   }
 }
