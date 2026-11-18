@@ -110,7 +110,11 @@
     "laptops": "Laptops",
     "schoolSemesters": "School semesters",
     "familyTrips": "Family trips",
-    "risk": { "rendah": "Low", "sedang": "Medium", "tinggi": "High" },
+    "risk": {
+      "rendah": "Low",
+      "sedang": "Medium",
+      "tinggi": "High"
+    },
     "riskLabel": "Risk level",
     "recommendations": "Recommendations",
     "disclaimer": "Conservative estimate for education, not financial or legal advice."
@@ -120,7 +124,11 @@
     "subtitle": "Test your understanding of drug dangers.",
     "questions": "{count} questions",
     "pass": "Passing score {score}%",
-    "difficulty": { "easy": "Easy", "medium": "Medium", "hard": "Hard" },
+    "difficulty": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
     "start": "Start quiz",
     "empty": "No quizzes yet.",
     "error": "Failed to load quizzes.",
@@ -164,11 +172,19 @@
     "title": "anonymous report / consultation",
     "subtitle": "A safe channel. Your message goes only to the handling team.",
     "category": "Category",
-    "categories": { "konsultasi": "Consultation", "pengaduan": "Report" },
+    "categories": {
+      "konsultasi": "Consultation",
+      "pengaduan": "Report"
+    },
     "subject": "Subject",
     "message": "Message",
     "contactMethod": "Contact method (optional)",
-    "methods": { "whatsapp": "WhatsApp", "email": "Email", "telepon": "Phone", "tidak_ada": "None" },
+    "methods": {
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "telepon": "Phone",
+      "tidak_ada": "None"
+    },
     "contactValue": "Contact value",
     "submit": "Send",
     "success": "Sent. Your ticket code: {code}",
@@ -216,5 +232,35 @@
       "error": "Failed to post comment.",
       "loading": "Loading…"
     }
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "registerTitle": "Register",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "submitLogin": "Sign in",
+    "submitRegister": "Register",
+    "switchToRegister": "No account yet? Register",
+    "switchToLogin": "Have an account? Sign in",
+    "error": "Failed. Check your input and try again.",
+    "success": "Signed in.",
+    "logout": "Sign out",
+    "account": "Account"
+  },
+  "me": {
+    "title": "my profile",
+    "subtitle": "Your points, badges, and learning history.",
+    "points": "Points",
+    "quizzesPassed": "Quizzes passed",
+    "articlesRead": "Articles read",
+    "commentsApproved": "Comments",
+    "attempts": "Recent quiz attempts",
+    "certificates": "Certificates",
+    "empty": "No data yet.",
+    "memberSince": "Member since",
+    "score": "Score {score}%",
+    "passed": "Passed",
+    "failed": "Not passed"
   }
 }

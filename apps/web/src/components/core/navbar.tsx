@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import FlagEN from "#/public/static/flags/en.svg";
 import FlagID from "#/public/static/flags/id.svg";
 
+import { AccountMenu } from "@/components/core/account-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -93,6 +94,7 @@ export function Navbar() {
               </Link>
             ))}
             <ThemeToggle />
+            <AccountMenu />
           </div>
         </div>
       </nav>

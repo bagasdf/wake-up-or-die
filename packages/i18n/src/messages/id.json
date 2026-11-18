@@ -110,7 +110,11 @@
     "laptops": "Laptop",
     "schoolSemesters": "Semester sekolah",
     "familyTrips": "Liburan keluarga",
-    "risk": { "rendah": "Rendah", "sedang": "Sedang", "tinggi": "Tinggi" },
+    "risk": {
+      "rendah": "Rendah",
+      "sedang": "Sedang",
+      "tinggi": "Tinggi"
+    },
     "riskLabel": "Level risiko",
     "recommendations": "Rekomendasi",
     "disclaimer": "Estimasi konservatif untuk edukasi, bukan nasihat keuangan atau hukum."
@@ -120,7 +124,11 @@
     "subtitle": "Uji pemahamanmu tentang bahaya narkoba.",
     "questions": "{count} soal",
     "pass": "Skor lulus {score}%",
-    "difficulty": { "easy": "Mudah", "medium": "Sedang", "hard": "Sulit" },
+    "difficulty": {
+      "easy": "Mudah",
+      "medium": "Sedang",
+      "hard": "Sulit"
+    },
     "start": "Mulai kuis",
     "empty": "Belum ada kuis.",
     "error": "Gagal memuat kuis.",
@@ -164,11 +172,19 @@
     "title": "laporan / konsultasi anonim",
     "subtitle": "Saluran aman. Pesannya hanya untuk tim penanganan.",
     "category": "Kategori",
-    "categories": { "konsultasi": "Konsultasi", "pengaduan": "Pengaduan" },
+    "categories": {
+      "konsultasi": "Konsultasi",
+      "pengaduan": "Pengaduan"
+    },
     "subject": "Subjek",
     "message": "Pesan",
     "contactMethod": "Metode kontak (opsional)",
-    "methods": { "whatsapp": "WhatsApp", "email": "Email", "telepon": "Telepon", "tidak_ada": "Tidak ada" },
+    "methods": {
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "telepon": "Telepon",
+      "tidak_ada": "Tidak ada"
+    },
     "contactValue": "Nilai kontak",
     "submit": "Kirim",
     "success": "Terkirim. Kode tiketmu: {code}",
@@ -216,5 +232,35 @@
       "error": "Gagal mengirim komentar.",
       "loading": "Memuat…"
     }
+  },
+  "auth": {
+    "loginTitle": "Masuk",
+    "registerTitle": "Daftar",
+    "email": "Email",
+    "password": "Kata sandi",
+    "name": "Nama",
+    "submitLogin": "Masuk",
+    "submitRegister": "Daftar",
+    "switchToRegister": "Belum punya akun? Daftar",
+    "switchToLogin": "Sudah punya akun? Masuk",
+    "error": "Gagal. Periksa isianmu lalu coba lagi.",
+    "success": "Berhasil masuk.",
+    "logout": "Keluar",
+    "account": "Akun"
+  },
+  "me": {
+    "title": "profil ku",
+    "subtitle": "Poin, lencana, dan riwayat belajarmu.",
+    "points": "Poin",
+    "quizzesPassed": "Kuis lulus",
+    "articlesRead": "Artikel dibaca",
+    "commentsApproved": "Komentar",
+    "attempts": "Upaya kuis terbaru",
+    "certificates": "Sertifikat",
+    "empty": "Belum ada data.",
+    "memberSince": "Anggota sejak",
+    "score": "Skor {score}%",
+    "passed": "Lulus",
+    "failed": "Belum lulus"
   }
 }
