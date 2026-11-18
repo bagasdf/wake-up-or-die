@@ -1,5 +1,5 @@
+import type { Locale } from "@wuod/i18n";
 import { getTranslations } from "next-intl/server";
-
 import { Footer } from "@/components/core/footer";
 import { ArticlesPreview } from "@/components/landing/articles-preview";
 import { Features } from "@/components/landing/features";
@@ -9,13 +9,9 @@ import { Stats } from "@/components/landing/stats";
 import Dither from "@/components/shaders/dither-background";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 
-import type { Locale } from "@wuod/i18n";
-
 export const instant = false;
 
-export default async function Page({
-  params,
-}: LayoutProps<'/[locale]'>) {
+export default async function Page({ params }: LayoutProps<"/[locale]">) {
   const { locale } = await params;
   const t = await getTranslations("hero");
 

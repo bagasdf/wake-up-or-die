@@ -130,7 +130,7 @@ export function ReportForm() {
           <button
             type="submit"
             disabled={sending}
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px disabled:opacity-50"
+            className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px disabled:opacity-50"
           >
             <PaperPlaneRight className="size-4" weight="bold" /> {t("submit")}
           </button>

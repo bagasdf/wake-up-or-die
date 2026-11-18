@@ -62,7 +62,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "rounded-md px-3 py-1.5 transition-colors hover:bg-muted",
+                  "rounded-md px-3 py-1.5 transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
                   pathname === link.href &&
                     "bg-primary text-primary-foreground hover:bg-primary/90",
                 )}
@@ -79,7 +79,7 @@ export function Navbar() {
                 locale={l}
                 aria-label={l === "id" ? "Bahasa Indonesia" : "English"}
                 className={cn(
-                  "rounded-full p-0.5 transition-opacity",
+                  "inline-flex size-11 items-center justify-center rounded-full transition-opacity focus-visible:ring-2 focus-visible:ring-ring",
                   locale !== l && "opacity-50 hover:opacity-100",
                 )}
               >

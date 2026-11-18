@@ -74,7 +74,7 @@ export function QuizList() {
               </p>
               <Link
                 href={`/quiz/${quiz.slug}`}
-                className="mt-4 inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px"
+                className="mt-4 inline-flex h-11 items-center justify-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px"
               >
                 <Trophy className="size-4" weight="duotone" /> {t("start")}
               </Link>

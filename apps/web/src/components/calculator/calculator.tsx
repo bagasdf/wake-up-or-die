@@ -1,8 +1,12 @@
 "use client";
 
+import {
+  Calculator as CalculatorIcon,
+  Receipt,
+  Warning,
+} from "@phosphor-icons/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { Calculator as CalculatorIcon, Receipt, Warning } from "@phosphor-icons/react";
 
 type Result = {
   months: number;
@@ -76,9 +80,14 @@ export function Calculator() {
       <h1 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">
         {t("title")}
       </h1>
-      <p className="mt-3 max-w-[65ch] text-sm text-muted-foreground">{t("subtitle")}</p>
+      <p className="mt-3 max-w-[65ch] text-sm text-muted-foreground">
+        {t("subtitle")}
+      </p>
 
-      <form onSubmit={submit} className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-2">
+      <form
+        onSubmit={submit}
+        className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-2"
+      >
         <label className="block">
           <span className="text-sm font-medium">{t("monthlySpend")}</span>
           <input
@@ -128,7 +137,7 @@ export function Calculator() {
           <button
             type="submit"
             disabled={sending}
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px disabled:opacity-50"
+            className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px disabled:opacity-50"
           >
             <CalculatorIcon className="size-4" weight="duotone" /> {t("submit")}
           </button>
@@ -159,9 +168,14 @@ export function Calculator() {
           </div>
           <ul className="divide-y divide-border rounded-[1.25rem] border">
             {rows.map(([label, value]) => (
-              <li key={label} className="flex items-center justify-between px-5 py-3 text-sm">
+              <li
+                key={label}
+                className="flex items-center justify-between px-5 py-3 text-sm"
+              >
                 <span className="text-muted-foreground">{label}</span>
-                <span className="font-mono tracking-tight">{formatIDR(value)}</span>
+                <span className="font-mono tracking-tight">
+                  {formatIDR(value)}
+                </span>
               </li>
             ))}
           </ul>
@@ -170,10 +184,18 @@ export function Calculator() {
               <Receipt className="size-4" weight="duotone" /> {t("equivalents")}
             </p>
             <ul className="mt-4 grid grid-cols-2 gap-3 text-sm">
-              <li>{result.equivalents.motorcycles} {t("motorcycles")}</li>
-              <li>{result.equivalents.laptops} {t("laptops")}</li>
-              <li>{result.equivalents.schoolSemesters} {t("schoolSemesters")}</li>
-              <li>{result.equivalents.familyTrips} {t("familyTrips")}</li>
+              <li>
+                {result.equivalents.motorcycles} {t("motorcycles")}
+              </li>
+              <li>
+                {result.equivalents.laptops} {t("laptops")}
+              </li>
+              <li>
+                {result.equivalents.schoolSemesters} {t("schoolSemesters")}
+              </li>
+              <li>
+                {result.equivalents.familyTrips} {t("familyTrips")}
+              </li>
             </ul>
           </div>
           <div className="rounded-[1.25rem] border p-6">
@@ -181,15 +203,20 @@ export function Calculator() {
               {t("recommendations")}
             </p>
             <ul className="mt-4 space-y-2 text-sm">
-              {result.recommendations.map((item, i) => (
-                <li key={i} className="flex gap-2">
-                  <Warning className="mt-0.5 size-4 shrink-0 text-primary" weight="duotone" />
+              {result.recommendations.map((item) => (
+                <li key={item} className="flex gap-2">
+                  <Warning
+                    className="mt-0.5 size-4 shrink-0 text-primary"
+                    weight="duotone"
+                  />
                   {item}
                 </li>
               ))}
             </ul>
           </div>
-          <p className="text-xs text-muted-foreground md:col-span-2">{result.disclaimer}</p>
+          <p className="text-xs text-muted-foreground md:col-span-2">
+            {result.disclaimer}
+          </p>
         </div>
       ) : null}
     </section>

@@ -79,7 +79,7 @@ export function ArticleList() {
           type="button"
           onClick={() => setCategory(null)}
           className={
-            "rounded-full px-4 py-1.5 text-sm font-medium transition-colors " +
+            "rounded-full px-4 py-1.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring " +
             (category === null
               ? "bg-primary text-primary-foreground"
               : "border border-border hover:border-primary/50")
@@ -93,7 +93,7 @@ export function ArticleList() {
             type="button"
             onClick={() => setCategory(cat)}
             className={
-              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors " +
+              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring " +
               (category === cat
                 ? "bg-primary text-primary-foreground"
                 : "border border-border hover:border-primary/50")

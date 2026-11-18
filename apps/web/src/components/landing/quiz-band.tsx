@@ -18,7 +18,7 @@ export function QuizBand() {
         </div>
         <Link
           href="/quiz"
-          className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-background px-4 text-sm font-medium text-foreground transition-transform hover:-translate-y-px"
+          className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-lg bg-background px-4 text-sm font-medium text-foreground transition-transform hover:-translate-y-px"
         >
           {t("cta")}
           <ArrowRight weight="bold" className="size-4" />

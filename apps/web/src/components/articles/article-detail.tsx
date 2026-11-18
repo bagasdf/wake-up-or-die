@@ -125,7 +125,9 @@ export function ArticleDetail({ slug }: { slug: string }) {
         {article.title}
       </h1>
       <p className="mt-4 font-mono text-[10.5px] uppercase tracking-[0.22em] text-muted-foreground">
-        {t(`categories.${article.category}`)} ·{" "}
+        <span className="rounded-full border border-border px-2 py-0.5">
+          {t(`categories.${article.category}`)}
+        </span>{" "}
         {article.publishedAt
           ? new Date(article.publishedAt).toLocaleDateString(locale, { dateStyle: "medium" })
           : ""}{" "}
@@ -219,7 +221,7 @@ export function ArticleDetail({ slug }: { slug: string }) {
           <button
             type="submit"
             disabled={sending}
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px disabled:opacity-50"
+            className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px disabled:opacity-50"
           >
             <PaperPlaneRight className="size-4" weight="bold" /> {t("comments.submit")}
           </button>
