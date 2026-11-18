@@ -1,6 +1,7 @@
 import { type Locale, locales } from "@wuod/i18n";
 import type { Metadata } from "next";
 import { Geist_Mono, Inter, Source_Serif_4 } from "next/font/google";
+import "../globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Navbar } from "@/components/core/navbar";

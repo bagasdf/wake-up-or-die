@@ -28,5 +28,64 @@
   "footer": {
     "tagline": "Anti-drug education for students and the public.",
     "rights": "All rights reserved."
+  },
+  "landing": {
+    "stats": {
+      "articles": "Articles",
+      "quizzes": "Quizzes",
+      "badges": "Badges",
+      "contacts": "Help Contacts"
+    },
+    "features": {
+      "title": "everything you need",
+      "subtitle": "One place to learn, test yourself, and ask for help about drugs.",
+      "items": {
+        "articles": {
+          "title": "Educational articles",
+          "description": "Drug types, health impacts, and prevention tips."
+        },
+        "quiz": {
+          "title": "Interactive quiz",
+          "description": "Test your understanding and earn a final score."
+        },
+        "calculator": {
+          "title": "Impact calculator",
+          "description": "Simulate the financial loss caused by addiction."
+        },
+        "chat": {
+          "title": "24/7 AI chatbot",
+          "description": "Fast answers on early symptoms and help."
+        },
+        "directory": {
+          "title": "Help directory",
+          "description": "Emergency numbers, BNN, and nearby rehab."
+        },
+        "report": {
+          "title": "Anonymous report",
+          "description": "Send consultation or reports safely."
+        }
+      }
+    },
+    "articles": {
+      "title": "latest articles",
+      "empty": "No articles yet."
+    },
+    "quiz": {
+      "title": "test your understanding",
+      "body": "Take the interactive quiz and prove that you are aware.",
+      "cta": "Start quiz"
+    },
+    "help": {
+      "title": "need help right now?",
+      "body": "Reach emergency services and the nearest rehab center anytime.",
+      "cta": "See emergency contacts",
+      "empty": "Contact data unavailable."
+    },
+    "cta": {
+      "title": "aware today, better life",
+      "body": "Start by reading one article or taking one quiz.",
+      "primary": "Start quiz",
+      "secondary": "Read articles"
+    }
   }
 }

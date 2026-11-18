@@ -28,5 +28,64 @@
   "footer": {
     "tagline": "Edukasi anti narkoba untuk pelajar dan masyarakat.",
     "rights": "Seluruh hak cipta dilindungi."
+  },
+  "landing": {
+    "stats": {
+      "articles": "Artikel",
+      "quizzes": "Kuis",
+      "badges": "Lencana",
+      "contacts": "Kontak Bantuan"
+    },
+    "features": {
+      "title": "segala yang kamu butuhkan",
+      "subtitle": "Satu tempat untuk belajar, menguji, dan meminta bantuan soal narkoba.",
+      "items": {
+        "articles": {
+          "title": "Artikel edukasi",
+          "description": "Jenis narkoba, dampak kesehatan, dan tips pencegahan."
+        },
+        "quiz": {
+          "title": "Kuis interaktif",
+          "description": "Uji pemahamanmu dan raih skor akhir."
+        },
+        "calculator": {
+          "title": "Kalkulator dampak",
+          "description": "Simulasi kerugian finansial akibat adiksi."
+        },
+        "chat": {
+          "title": "Chatbot AI 24/7",
+          "description": "Jawaban cepat soal gejala awal dan bantuan."
+        },
+        "directory": {
+          "title": "Direktori bantuan",
+          "description": "Nomor darurat, BNN, dan rehabilitasi terdekat."
+        },
+        "report": {
+          "title": "Laporan anonim",
+          "description": "Salurkan konsultasi atau pengaduan dengan aman."
+        }
+      }
+    },
+    "articles": {
+      "title": "artikel terbaru",
+      "empty": "Belum ada artikel."
+    },
+    "quiz": {
+      "title": "uji pemahamanmu",
+      "body": "Kerjakan kuis interaktif dan buktikan bahwa kamu sudah sadar.",
+      "cta": "Mulai kuis"
+    },
+    "help": {
+      "title": "butuh bantuan sekarang?",
+      "body": "Hubungi layanan darurat dan pusat rehabilitasi terdekat kapan saja.",
+      "cta": "Lihat kontak darurat",
+      "empty": "Data kontak tidak tersedia."
+    },
+    "cta": {
+      "title": "sadar hari ini, hidup lebih baik",
+      "body": "Mulai dari membaca satu artikel atau mengerjakan satu kuis.",
+      "primary": "Mulai kuis",
+      "secondary": "Baca artikel"
+    }
   }
 }

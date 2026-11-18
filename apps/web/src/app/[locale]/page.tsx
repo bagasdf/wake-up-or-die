@@ -1,10 +1,22 @@
 import { getTranslations } from "next-intl/server";
+
+import { Footer } from "@/components/core/footer";
+import { ArticlesPreview } from "@/components/landing/articles-preview";
+import { Features } from "@/components/landing/features";
+import { Helpline } from "@/components/landing/helpline";
+import { QuizBand } from "@/components/landing/quiz-band";
+import { Stats } from "@/components/landing/stats";
 import Dither from "@/components/shaders/dither-background";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 
+import type { Locale } from "@wuod/i18n";
+
 export const instant = false;
 
-export default async function Page() {
+export default async function Page({
+  params,
+}: LayoutProps<'/[locale]'>) {
+  const { locale } = await params;
   const t = await getTranslations("hero");
 
   return (
@@ -67,8 +79,16 @@ export default async function Page() {
           <br />
           <br />
           <br />
+          <br />
         </div>
       </section>
+
+      <Stats />
+      <Features />
+      <ArticlesPreview />
+      <QuizBand />
+      <Helpline />
+      <Footer locale={locale as Locale} />
     </main>
   );
 }
