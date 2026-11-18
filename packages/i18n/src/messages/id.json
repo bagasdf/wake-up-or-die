@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "home": "Beranda",
+    "articles": "Artikel",
+    "quiz": "Kuis",
+    "calculator": "Kalkulator",
+    "directory": "Bantuan",
+    "report": "Laporan",
+    "chat": "Chat",
+    "menu": "Menu",
+    "close": "Tutup"
+  },
+  "common": {
+    "skipToContent": "Lewati ke konten",
+    "readMore": "Baca selengkapnya",
+    "back": "Kembali",
+    "loading": "Memuat…",
+    "error": "Terjadi kesalahan.",
+    "retry": "Coba lagi",
+    "unknown": "Tidak diketahui",
+    "yes": "Ya",
+    "no": "Tidak"
+  },
+  "hero": {
+    "title": "sadar atau mati",
+    "subtitle": "konsultasi masalah narkoba mu, kami akan selalu membantu mu."
+  },
+  "footer": {
+    "tagline": "Edukasi anti narkoba untuk pelajar dan masyarakat.",
+    "rights": "Seluruh hak cipta dilindungi."
+  }
+}

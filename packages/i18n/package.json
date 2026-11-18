@@ -1,0 +1,14 @@
+{
+  "name": "@wuod/i18n",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./routing": "./src/routing.ts",
+    "./messages/*": "./src/messages/*.json"
+  },
+  "dependencies": {
+    "next-intl": "^4.15.1"
+  }
+}

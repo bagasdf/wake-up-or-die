@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "home": "Home",
+    "articles": "Articles",
+    "quiz": "Quiz",
+    "calculator": "Calculator",
+    "directory": "Help",
+    "report": "Report",
+    "chat": "Chat",
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "common": {
+    "skipToContent": "Skip to content",
+    "readMore": "Read more",
+    "back": "Back",
+    "loading": "Loading…",
+    "error": "Something went wrong.",
+    "retry": "Try again",
+    "unknown": "Unknown",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "hero": {
+    "title": "wake up or die",
+    "subtitle": "consult about your drug problems, we will always help you."
+  },
+  "footer": {
+    "tagline": "Anti-drug education for students and the public.",
+    "rights": "All rights reserved."
+  }
+}
