@@ -1,6 +1,4 @@
-import type { Locale } from "@wuod/i18n";
 import { getTranslations } from "next-intl/server";
-import { Footer } from "@/components/core/footer";
 import { ArticlesPreview } from "@/components/landing/articles-preview";
 import { Features } from "@/components/landing/features";
 import { Helpline } from "@/components/landing/helpline";
@@ -11,8 +9,7 @@ import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 
 export const instant = false;
 
-export default async function Page({ params }: LayoutProps<"/[locale]">) {
-  const { locale } = await params;
+export default async function Page(): Promise<React.ReactElement> {
   const t = await getTranslations("hero");
 
   return (
@@ -84,7 +81,6 @@ export default async function Page({ params }: LayoutProps<"/[locale]">) {
       <ArticlesPreview />
       <QuizBand />
       <Helpline />
-      <Footer locale={locale as Locale} />
     </main>
   );
 }

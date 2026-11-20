@@ -4,7 +4,8 @@ import { Geist_Mono, Inter, Source_Serif_4 } from "next/font/google";
 import "../globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { Navbar } from "@/components/core/navbar";
+import { Footer } from "@/components/nav/footer";
+import { Navbar } from "@/components/nav/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 
@@ -59,6 +60,7 @@ export default async function RootLayout({
           <NextIntlClientProvider locale={safeLocale} messages={messages}>
             <Navbar />
             {children}
+            <Footer />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
