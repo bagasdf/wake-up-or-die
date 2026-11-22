@@ -87,7 +87,7 @@ const ARTICLE_SEED: SeedArticle[] = [
     seriesSlug: "dasar-anti-narkoba",
     seriesOrder: 1,
     coverImageUrl:
-      "https://placehold.co/1200x630/0f766e/ffffff?text=Jenis+Narkoba+dan+Efeknya",
+      "https://commons.wikimedia.org/wiki/Special:Redirect/file/NIDA_methamphetamine_pills.jpg",
     content: `## Apa itu narkoba?
 
 Narkoba adalah singkatan dari narkotika, psikotropika, dan bahan adiktif lainnya. Dalam dunia medis, beberapa zat golongan ini dipakai untuk terapi dengan pengawasan ketat. Masalah muncul ketika zat tersebut dipakai tanpa indikasi medis, dengan dosis berlebihan, atau secara berulang untuk mencari sensasi.
@@ -117,7 +117,7 @@ Jangan mencoba zat apa pun untuk "sekadar tahu". Jika kamu atau orang terdekat s
     seriesSlug: "dasar-anti-narkoba",
     seriesOrder: 2,
     coverImageUrl:
-      "https://placehold.co/1200x630/0f766e/ffffff?text=Otak+Remaja+dan+Narkoba",
+      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Teen_brain_images_(30079903896).png",
     content: `## Otak yang sedang dibangun
 
 Hingga usia sekitar 25 tahun, otak terus membentuk koneksi baru, terutama di bagian yang mengatur perencanaan, pengendalian diri, dan penilaian risiko. Zat adiktif masuk ke sistem penghargaan otak dan membanjirinya dengan sinyal senang yang jauh lebih kuat daripada aktivitas biasa.
@@ -147,7 +147,7 @@ Jika penggunaan zat sudah mengganggu sekolah, hubungan keluarga, atau membuat se
     seriesSlug: "keterampilan-bertahan",
     seriesOrder: 1,
     coverImageUrl:
-      "https://placehold.co/1200x630/0f766e/ffffff?text=Cara+Menolak+Narkoba",
+      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Retorno_drug_rehabilitation_center.jpg",
     content: `## Menolak bukan berarti tidak gaul
 
 Tekanan teman sering terasa besar karena takut dikucilkan. Padahal, menolak sesuatu yang berbahaya justru menunjukkan bahwa kamu punya pendirian. Kamu tidak perlu berpidato panjang; cukup jawaban singkat yang tegas.
@@ -179,7 +179,7 @@ Rasa malu bukan alasan untuk menunda bantuan. Ceritakan pada orang dewasa yang k
     seriesSlug: "keterampilan-bertahan",
     seriesOrder: 2,
     coverImageUrl:
-      "https://placehold.co/1200x630/0f766e/ffffff?text=Hukum+Narkoba+Indonesia",
+      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Legal_Gavel_(27571702173).jpg",
     content: `## Kerangka hukum
 
 Penyalahgunaan narkotika di Indonesia diatur terutama dalam Undang-Undang Nomor 35 Tahun 2009 tentang Narkotika. Aturan ini membedakan perbuatan memiliki, menyimpan, menguasai, menyediakan, memproduksi, dan mengedarkan narkotika, dengan ancaman pidana yang berbeda-beda.
@@ -208,7 +208,7 @@ Layanan Informasi BNN di 184 dapat memberi arahan awal. Untuk bantuan hukum, hub
     seriesSlug: "pulih-bersama",
     seriesOrder: 1,
     coverImageUrl:
-      "https://placehold.co/1200x630/0f766e/ffffff?text=Gejala+Kecanduan",
+      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Retorno_drug_rehabilitation_center.jpg",
     content: `## Apa itu kecanduan?
 
 Kecanduan bukan sekadar kurang niat. Ini kondisi kesehatan yang membuat otak mendorong seseorang terus memakai zat meskipun sudah tahu dampaknya. Tanda utamanya adalah hilangnya kendali atas penggunaan.
@@ -240,7 +240,7 @@ Pemulihan bukan proses instan. Dukungan keluarga, konselor, dan komunitas sangat
     category: "umum",
     readingMinutes: 5,
     coverImageUrl:
-      "https://placehold.co/1200x630/0f766e/ffffff?text=Mitos+dan+Fakta+Narkoba",
+      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Brain_of_marijuana_user.jpg",
     content: `## Mitos 1: "Cuma sekali, nggak bakal kecanduan"
 
 Fakta: Tidak ada jumlah aman. Sebagian orang menjadi kecanduan setelah penggunaan pertama atau beberapa kali, tergantung jenis zat, dosis, dan kondisi tubuh. Efek buruk seperti serangan panik atau keracunan bisa terjadi sejak awal.
@@ -277,7 +277,23 @@ async function seedArticles(authorId: string): Promise<void> {
       .where(eq(articles.slug, item.slug))
       .limit(1);
 
-    if (existing) continue;
+    if (existing) {
+      await db
+        .update(articles)
+        .set({
+          title: item.title,
+          excerpt: item.excerpt,
+          content: item.content,
+          coverImageUrl: item.coverImageUrl ?? null,
+          category: item.category,
+          seriesSlug: item.seriesSlug ?? null,
+          seriesOrder: item.seriesOrder ?? 0,
+          status: "published",
+          readingMinutes: item.readingMinutes,
+        })
+        .where(eq(articles.id, existing.id));
+      continue;
+    }
 
     await db.insert(articles).values({
       slug: item.slug,

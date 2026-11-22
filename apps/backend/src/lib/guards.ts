@@ -1,7 +1,10 @@
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
 
+import { eq } from "drizzle-orm";
+
 import { createDb } from "@/db";
+import { user } from "@/db/schema";
 import type { AppEnv } from "@/env";
 import { createAuth } from "@/lib/auth";
 import type { AuthUser } from "@/lib/auth";
@@ -29,8 +32,19 @@ export const withSession = createMiddleware<AppEnv>(async (c, next) => {
     const auth = createAuth(c.env);
     const session = await auth.api.getSession({ headers: new Headers(c.req.raw.headers) });
     if (session) {
+      const db = c.get("db");
+      const [currentUser] = await db
+        .select({ role: user.role })
+        .from(user)
+        .where(eq(user.id, session.user.id))
+        .limit(1);
+
+      const freshUser = {
+        ...session.user,
+        role: currentUser?.role ?? "user",
+      };
       c.set("session", session);
-      c.set("user", session.user);
+      c.set("user", freshUser);
     }
   } catch {
     // A bad cookie must not break public endpoints.

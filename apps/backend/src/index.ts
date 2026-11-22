@@ -42,7 +42,10 @@ api.on(["GET", "POST"], "/auth/*", async (c) => {
   } catch (error) {
     console.error("better-auth handler failed", error);
     return c.json(
-      { success: false, message: "Layanan autentikasi sedang bermasalah. Coba lagi nanti." },
+      {
+        success: false,
+        message: "Layanan autentikasi sedang bermasalah. Coba lagi nanti.",
+      },
       500,
     );
   }
@@ -78,8 +81,14 @@ export const app = api
           { name: "Articles", description: "Artikel dan blog edukasi" },
           { name: "Comments", description: "Diskusi pada artikel" },
           { name: "Quizzes", description: "Kuis interaktif" },
-          { name: "Calculator", description: "Kalkulator dampak finansial dan masa depan" },
-          { name: "Gamification", description: "Lencana dan sertifikat digital" },
+          {
+            name: "Calculator",
+            description: "Kalkulator dampak finansial dan masa depan",
+          },
+          {
+            name: "Gamification",
+            description: "Lencana dan sertifikat digital",
+          },
           { name: "Chatbot", description: "Konsultasi AI 24/7" },
           { name: "Directory", description: "Kontak bantuan dan rehabilitasi" },
           { name: "Reports", description: "Konsultasi dan pengaduan anonim" },
@@ -126,7 +135,10 @@ export const app = api
 
     console.error("unhandled error", err);
     return c.json(
-      { success: false, message: "Terjadi kesalahan pada server. Coba lagi nanti." },
+      {
+        success: false,
+        message: "Terjadi kesalahan pada server. Coba lagi nanti.",
+      },
       500,
     );
   });
