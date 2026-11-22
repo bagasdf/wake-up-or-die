@@ -1,256 +1,224 @@
 "use client";
 
 import {
-  CaretDown,
-  DotsThree,
-  Hamburger,
-  MoonIcon,
+  ArrowRight,
+  List,
+  Moon,
   SignOut,
-  SunIcon,
+  Sun,
   User,
 } from "@phosphor-icons/react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
+import { useEffect, useState } from "react";
+import { apiJson } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
-export function Navbar() {
-  const { resolvedTheme, setTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+const navItems = [
+  { href: "/articles", label: "Belajar" },
+  { href: "/quiz", label: "Kuis" },
+  { href: "/directory", label: "Bantuan" },
+  { href: "/chat", label: "Konsultasi" },
+] as const;
 
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [overflowOpen, setOverflowOpen] = useState(false);
+export function Navbar() {
+  const pathname = usePathname();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [open, setOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [me, setMe] = useState<{
+    user?: { name?: string | null; email: string; role?: string };
+  } | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    apiJson<{ user: { name?: string | null; email: string; role?: string } }>(
+      "/api/me",
+    )
+      .then(setMe)
+      .catch(() => setMe(null));
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => setOpen(false), []);
 
   const toggleTheme = () => {
-    const root = document.documentElement;
-    root.classList.add("theme-transition");
-    setTheme(isDark ? "light" : "dark");
-    window.setTimeout(() => root.classList.remove("theme-transition"), 300);
+    document.documentElement.classList.add("theme-transition");
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+    window.setTimeout(
+      () => document.documentElement.classList.remove("theme-transition"),
+      300,
+    );
   };
 
-  const handleSignOut = () => {
-    setProfileOpen(false);
-    // sign-out is handled via same-origin POST redirect by the backend
-    window.location.href = "/api/auth/sign-out";
+  const signOut = () => {
+    fetch("/api/auth/sign-out", { method: "POST", redirect: "follow" }).finally(
+      () => {
+        window.location.assign("/");
+      },
+    );
   };
-
-  const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/company", label: "Company" },
-    { href: "/products", label: "Products", hasChevron: true },
-    { href: "/team", label: "Team" },
-    { href: "/features", label: "Features" },
-    { href: "/services", label: "Services" },
-    { href: "/blog", label: "Blog" },
-    { href: "/contact", label: "Contact" },
-  ];
-
-  const overflowLinks = [
-    { href: "/pricing", label: "Pricing" },
-    { href: "/about", label: "About" },
-  ];
 
   return (
-    <nav className="border-b bg-background sm:border-0 sm:bg-transparent">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section frame: full-width stack of two tiers */}
-        <div className="flex flex-col sm:flex-row items-start sm-items-center justify-between gap-4 sm:gap-6">
-          {/* ===== TOP TIER ===== */}
-          <section className="flex flex-col sm:flex-row items-start sm-items-center justify-between gap-4 w-full py-4 sm:py-6 border-b sm:border-0">
-            {/* Brand cluster */}
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 md:px-6 md:pt-5">
+      <nav
+        className={cn(
+          "mx-auto flex h-16 max-w-[1280px] items-center justify-between rounded-2xl border px-3 transition-all md:px-5",
+          scrolled
+            ? "border-border/80 bg-background/88 text-foreground shadow-[0_12px_40px_rgba(20,10,5,0.10)] backdrop-blur-xl"
+            : "border-border/20 bg-card/88 text-foreground shadow-[0_12px_36px_rgba(20,10,5,0.12)] backdrop-blur-xl",
+        )}
+        aria-label="Navigasi utama"
+      >
+        <Link
+          href="/"
+          className="flex items-center gap-2.5"
+          aria-label="Wake Up or Die — Beranda"
+        >
+          <span className="relative grid size-9 place-items-center overflow-hidden rounded-xl bg-primary text-primary-foreground">
+            <Image
+              src="/static/images/logo.svg"
+              alt=""
+              width={28}
+              height={28}
+              className="size-7 w-auto"
+            />
+          </span>
+          <span className="hidden font-heading text-[15px] font-bold tracking-tight sm:block">
+            Wake Up or Die
+          </span>
+        </Link>
+
+        <div className="absolute left-1/2 z-10 hidden -translate-x-1/2 items-center gap-1 md:flex">
+          {navItems.map((item) => {
+            const active = item.href === pathname;
+            return (
               <Link
-                href="/"
-                className="flex items-center gap-2.5 text-primary hover:text-primary/90 transition-colors"
+                key={`${item.href}-${item.label}`}
+                href={item.href}
+                className={cn(
+                  "relative z-20 rounded-lg px-3 py-2 text-sm font-semibold transition",
+                  active
+                    ? "bg-primary text-primary-foreground"
+                    : "text-foreground hover:bg-muted",
+                )}
               >
-                <svg
-                  className="size-5 text-primary fill-current"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                </svg>
-                <span className="font-semibold tracking-tighter">Brand</span>
+                {item.label}
               </Link>
-            </div>
-
-            {/* Utility cluster: icon-only group */}
-            <div className="flex items-center gap-2">
-              {/* Theme toggle */}
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Toggle theme"
-                onClick={toggleTheme}
-                className={cn(
-                  "p-2 rounded-md hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-                  isDark ? "bg-dark/20" : "bg-light/20",
-                )}
-              >
-                {isDark ? <SunIcon /> : <MoonIcon />}
-              </Button>
-              {/* Notification */}
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Notifications"
-                className={cn(
-                  "p-2 rounded-md hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-                  isDark ? "bg-dark/20" : "bg-light/20",
-                )}
-              >
-                <svg
-                  className="size-4 fill-current text-muted"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M12 22c1.1 0 2.2-.1 3.3-.3L20.3 15.5c-.6-1.5-2.7-1.8-3.6-1.2L9.8 18.8c.6 1.5 2.7 1.8 3.6 1.2c1.1.1 2.2.1 3.3.1zM12 2L4.53 7.53L9.66 12.19L12 15.08L14.34 12.19L19.47 7.53L12 2Z" />
-                </svg>
-              </Button>
-              {/* Profile dropdown */}
-              <div className="relative flex items-center">
-                <button
-                  type="button"
-                  onClick={() => setProfileOpen((o) => !o)}
-                  className={cn(
-                    "flex size-9 items-center justify-center rounded-full border border-border bg-background p-0 text-primary hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-                    isDark ? "bg-dark/20" : "bg-light/20",
-                  )}
-                  aria-expanded={profileOpen}
-                  aria-haspopup="menu"
-                >
-                  <User className="size-5 fill-current" />
-                </button>
-                {profileOpen && (
-                  <div className="absolute right-0 mt-2 w-48 rounded-lg border border-border bg-popover p-2 shadow-lg z-50">
-                    <div className="flex items-center gap-3 px-3 py-2 text-sm">
-                      <User className="size-4 fill-current text-primary shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">User Name</div>
-                        <div className="text-xs text-muted-foreground truncate">
-                          user@example.com
-                        </div>
-                      </div>
-                    </div>
-                    <div className="border-t border-border" />
-                    <a
-                      href="/me"
-                      className="flex items-center gap-2 px-3 py-2 text-sm text-primary hover:bg-accent transition-colors"
-                    >
-                      <svg
-                        className="size-4 fill-current"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 2a8 8 0 100 16 8 8 0 000-16z" />
-                      </svg>
-                      Profile
-                    </a>
-                    <button
-                      type="button"
-                      onClick={handleSignOut}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-red-50 transition-colors text-left"
-                    >
-                      <SignOut className="size-4 fill-current" />
-                      Sign Out
-                    </button>
-                  </div>
-                )}
-              </div>
-              {/* Logout text link */}
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-primary hover:text-primary/90 transition-colors"
-              >
-                <SignOut className="size-4 fill-current" /> Sign Out
-              </button>
-            </div>
-          </section>
-
-          {/* ===== BOTTOM TIER ===== */}
-          <section className="flex items-center gap-1 px-0 py-3 sm:py-0">
-            <ul className="flex gap-4 sm:gap-6">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm font-medium tracking-tight transition-colors hover:text-primary"
-                  >
-                    {link.hasChevron ? (
-                      <>
-                        {link.label}{" "}
-                        <CaretDown className="size-4 fill-current text-muted hover:text-primary transition-colors ml-1" />
-                      </>
-                    ) : (
-                      link.label
-                    )}
-                  </Link>
-                </li>
-              ))}
-              {/* Overflow trigger */}
-              <li>
-                <button
-                  type="button"
-                  onClick={() => setOverflowOpen((o) => !o)}
-                  className={cn(
-                    "flex size-9 items-center justify-center rounded-lg border border-border bg-background p-0 text-primary hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-                    isDark ? "bg-dark/20" : "bg-light/20",
-                  )}
-                  aria-expanded={overflowOpen}
-                  aria-haspopup="menu"
-                >
-                  <DotsThree className="size-4 fill-current" />
-                </button>
-                {overflowOpen && (
-                  <div className="absolute right-0 mt-2 w-40 rounded-lg border border-border bg-popover p-2 shadow-lg z-50">
-                    {overflowLinks.map((link) => (
-                      <a
-                        key={link.href}
-                        href={link.href}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-sm text-primary hover:bg-accent transition-colors"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </li>
-            </ul>
-          </section>
+            );
+          })}
         </div>
 
-        {/* Mobile menu toggle (hamburger) - hidden above 768px */}
-        <button
-          type="button"
-          className="ds-menu-toggle mx-4 sm:px-6 lg:px-8 flex items-center gap-2 rounded-lg border border-border bg-background p-2 text-primary hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          onClick={() => setMobileOpen((o) => !o)}
-          aria-expanded={mobileOpen}
-          aria-haspopup="menu"
-        >
-          <Hamburger className="size-5 fill-current" />
-        </button>
-
-        {/* Collapsible panel beneath bottom tier */}
-        {mobileOpen && (
-          <div className="mx-4 sm:px-6 lg:px-8 mt-3 border border-border rounded-lg bg-popover p-4 shadow-lg z-50">
-            <ul className="space-y-3">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="block text-sm font-medium tracking-tight py-2 text-primary hover:bg-accent transition-colors rounded-md"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Ganti tema"
+            className="grid size-9 place-items-center rounded-lg text-foreground/78 transition-colors hover:bg-accent/12 hover:text-foreground"
+          >
+            {!mounted || resolvedTheme !== "dark" ? (
+              <Moon size={18} />
+            ) : (
+              <Sun size={18} />
+            )}
+          </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setAccountOpen((value) => !value)}
+              aria-label="Menu akun"
+              aria-expanded={accountOpen}
+              className="grid size-9 place-items-center rounded-lg border border-current/15 opacity-80 transition hover:opacity-100"
+            >
+              <User size={18} />
+            </button>
+            {accountOpen && (
+              <div className="absolute right-0 top-12 w-56 rounded-2xl border border-border bg-background p-2 text-foreground shadow-2xl">
+                {me?.user ? (
+                  <>
+                    <div className="px-3 py-2">
+                      <p className="truncate text-sm font-semibold">
+                        {me.user.name ?? "Pengguna"}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {me.user.email}
+                      </p>
+                    </div>
+                    <Link
+                      href="/me"
+                      onClick={() => setAccountOpen(false)}
+                      className="block rounded-lg px-3 py-2 text-sm hover:bg-muted"
+                    >
+                      Profil & pencapaian
+                    </Link>
+                    {me.user.role === "admin" && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setAccountOpen(false)}
+                        className="block rounded-lg px-3 py-2 text-sm hover:bg-muted"
+                      >
+                        Panel admin
+                      </Link>
+                    )}
+                    <button
+                      type="button"
+                      onClick={signOut}
+                      className="mt-1 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-destructive hover:bg-red-50 dark:hover:bg-red-950/30"
+                    >
+                      <SignOut size={16} /> Keluar
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="block rounded-lg px-3 py-2 text-sm hover:bg-muted"
+                    >
+                      Masuk
+                    </Link>
+                    <Link
+                      href="/register"
+                      className="mt-1 flex items-center justify-between rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
+                    >
+                      Daftar <ArrowRight size={16} />
+                    </Link>
+                  </>
+                )}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </nav>
+          <button
+            type="button"
+            onClick={() => setOpen((value) => !value)}
+            aria-label="Buka menu"
+            aria-expanded={open}
+            className="hidden size-9 place-items-center rounded-lg border border-current/15 md:hidden"
+          >
+            <List size={20} />
+          </button>
+        </div>
+      </nav>
+
+      {open && (
+        <div className="mx-auto mt-2 max-w-[1280px] rounded-2xl border border-border bg-background p-2 text-foreground shadow-2xl md:hidden">
+          {navItems.map((item) => (
+            <Link
+              key={`${item.href}-${item.label}`}
+              href={item.href}
+              className="block rounded-lg px-4 py-3 text-sm font-medium hover:bg-muted"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </header>
   );
 }

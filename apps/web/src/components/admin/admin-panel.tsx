@@ -1,8 +1,9 @@
 "use client";
 
 import { Check, Shield, X } from "@phosphor-icons/react";
-import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
+import { apiJson } from "@/lib/api";
+import { useTranslations } from "@/lib/i18n";
 
 type Article = {
   id: string;
@@ -41,21 +42,20 @@ export function AdminPanel() {
 
   const load = useCallback(() => {
     setError(false);
-    fetch("/api/me")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data: { user: { role: string } } | null) => {
-        setRole(data?.user.role ?? null);
-        if (!data) return;
-        return fetch(`/api/admin/comments?status=pending&perPage=20`)
-          .then((res) => (res.ok ? res.json() : { items: [] }))
-          .then((data: { items: Comment[] }) => setComments(data.items ?? []));
+    apiJson<{ user: { role: string } }>("/api/me")
+      .then((data) => {
+        setRole(data.user.role);
+        return Promise.all([
+          apiJson<{ items: Comment[] }>(
+            "/api/admin/comments?status=pending&perPage=20",
+          )
+            .then((commentsData) => setComments(commentsData.items ?? []))
+            .catch(() => setComments([])),
+          apiJson<{ items: Article[] }>("/api/admin/articles?perPage=20")
+            .then((articlesData) => setArticles(articlesData.items ?? []))
+            .catch(() => setArticles([])),
+        ]);
       })
-      .then(() =>
-        fetch("/api/admin/articles?perPage=20")
-          .then((res) => (res.ok ? res.json() : { items: [] }))
-          .then((data: { items: Article[] }) => setArticles(data.items ?? []))
-          .catch(() => {}),
-      )
       .catch(() => setError(true));
   }, []);
 
@@ -64,13 +64,12 @@ export function AdminPanel() {
   }, [load]);
 
   const moderate = (id: string, status: "approved" | "rejected") => {
-    fetch(`/api/admin/comments/${id}`, {
+    apiJson<Comment>(`/api/admin/comments/${id}`, {
       method: "PATCH",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ status }),
     })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((comment: Comment) =>
+      .then((comment) =>
         setComments((prev) =>
           prev
             ? prev.map((item) => (item.id === comment.id ? comment : item))
@@ -85,13 +84,12 @@ export function AdminPanel() {
     if (creating) return;
     setCreating(true);
     setFormError(null);
-    fetch("/api/admin/articles", {
+    apiJson<Article>("/api/admin/articles", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(draft),
     })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((created: Article) => {
+      .then((created) => {
         setArticles((prev) => (prev ? [created, ...prev] : prev));
         setShowForm(false);
         setDraft({
