@@ -8,4 +8,3 @@ export default function ChatPage() {
   );
 }
 
-export const instant = false;

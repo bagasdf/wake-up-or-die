@@ -8,4 +8,3 @@ export default function ArticlesPage() {
   );
 }
 
-export const instant = false;

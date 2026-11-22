@@ -8,4 +8,3 @@ export default function ReportsPage() {
   );
 }
 
-export const instant = false;

@@ -8,4 +8,3 @@ export default function CalculatorPage() {
   );
 }
 
-export const instant = false;

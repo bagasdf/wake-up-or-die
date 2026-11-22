@@ -1,3 +1,13 @@
+# Project Map
+
+- Stack: Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4, next-intl, Base UI, Bun workspaces.
+- Monorepo: `apps/web` web app; `packages/i18n` shared locale dictionaries/routing; `packages/ui` shared UI package.
+- Source: `apps/web/src/app/[locale]` routes/layouts; `apps/web/src/components` UI/features; `apps/web/src/i18n` navigation/request setup; `apps/web/src/lib` helpers.
+- Config: `apps/web/next.config.ts`, `apps/web/src/app/globals.css`, `turbo.json`, `package.json`.
+- Root scripts: `bun run dev`, `bun run build`, `bun run lint`, `bun run check-types`, `bun run format`.
+- Web scripts: `bun run dev`, `bun run build`, `bun run start`, `bun run lint`, `bun run format` inside `apps/web`.
+- Read targeted line ranges in large files. Do not read or repeat whole files when a focused edit or diff is sufficient.
+
 <!-- BEGIN:turborepo-agent-rules -->
 
 # This is NOT the Turborepo you know

@@ -12,4 +12,3 @@ export default async function ArticlePage({ params }: Props) {
   );
 }
 
-export const instant = false;

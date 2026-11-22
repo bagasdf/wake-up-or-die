@@ -1,17 +1,21 @@
-import createNextIntlPlugin from "next-intl/plugin";
 import type { NextConfig } from "next";
 
-const withNextIntl = createNextIntlPlugin();
+const apiBaseUrl =
+  process.env.API_BASE_URL ?? "https://wuod-api.hexagonn.my.id";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   experimental: {
     agentFeedback: true,
   },
   allowedDevOrigins: ["172.19.255.194"],
-  cacheComponents: true,
-  partialPrefetching: true,
   reactCompiler: true,
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "placehold.co" },
+      { protocol: "https", hostname: "commons.wikimedia.org" },
+      { protocol: "https", hostname: "upload.wikimedia.org" },
+    ],
+  },
   turbopack: {
     rules: {
       "*.css": {
@@ -24,13 +28,13 @@ const nextConfig: NextConfig = {
   rewrites: () => [
     {
       source: "/api/auth/:path*",
-      destination: "https://wuod-api.hexagonn.my.id/auth/:path*",
+      destination: `${apiBaseUrl}/api/auth/:path*`,
     },
     {
       source: "/api/:path*",
-      destination: "https://wuod-api.hexagonn.my.id/v1/:path*",
+      destination: `${apiBaseUrl}/api/v1/:path*`,
     },
   ],
 };
 
-export default withNextIntl(nextConfig);
+export default nextConfig;

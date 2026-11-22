@@ -8,4 +8,3 @@ export default function QuizPage() {
   );
 }
 
-export const instant = false;

@@ -8,4 +8,3 @@ export default function DirectoryPage() {
   );
 }
 
-export const instant = false;
