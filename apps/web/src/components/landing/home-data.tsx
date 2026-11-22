@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { apiJson } from "@/lib/api";
 
 export type HomeData = {
   stats: { articles: number; quizzes: number; badges: number };
@@ -22,16 +23,17 @@ export type HomeData = {
 };
 
 export function useHome() {
-  const [state, setState] = useState<{ data: HomeData | null; error: boolean }>({
-    data: null,
-    error: false,
-  });
+  const [state, setState] = useState<{ data: HomeData | null; error: boolean }>(
+    {
+      data: null,
+      error: false,
+    },
+  );
 
   useEffect(() => {
     let alive = true;
-    fetch("/api/home")
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((data: HomeData) => {
+    apiJson<HomeData>("/api/home")
+      .then((data) => {
         if (alive) setState({ data, error: false });
       })
       .catch(() => {

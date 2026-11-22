@@ -1,8 +1,9 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { Medal, Scroll } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
+import { apiJson } from "@/lib/api";
+import { useTranslations } from "@/lib/i18n";
 
 type Badge = {
   code: string;
@@ -30,18 +31,15 @@ export function BadgesCatalog() {
 
   useEffect(() => {
     let alive = true;
-    fetch("/api/badges")
-      .then((res) => (res.ok ? res.json() : []))
-      .then((data: Badge[]) => {
+    apiJson<Badge[]>("/api/badges")
+      .then((data) => {
         if (alive) setBadges(data);
       })
       .catch(() => {});
-    fetch("/api/certificates")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data: Certificate[] | null) => {
+    apiJson<Certificate[]>("/api/certificates")
+      .then((data) => {
         if (!alive) return;
-        if (data === null) setAuthed(false);
-        setCerts(data ?? []);
+        setCerts(Array.isArray(data) ? data : []);
       })
       .catch(() => {
         if (alive) setAuthed(false);
@@ -56,7 +54,9 @@ export function BadgesCatalog() {
       <h1 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">
         {t("title")}
       </h1>
-      <p className="mt-3 max-w-[65ch] text-sm text-muted-foreground">{t("subtitle")}</p>
+      <p className="mt-3 max-w-[65ch] text-sm text-muted-foreground">
+        {t("subtitle")}
+      </p>
 
       {badges === null ? (
         <div className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -90,9 +90,12 @@ export function BadgesCatalog() {
               <h2 className="mt-4 font-heading text-lg font-semibold tracking-tight">
                 {badge.name}
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">{badge.description}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {badge.description}
+              </p>
               <p className="mt-4 font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
-                {badge.points} {t("points")} · {t("earnedBy", { count: badge.earnedBy })}
+                {badge.points} {t("points")} ·{" "}
+                {t("earnedBy", { count: badge.earnedBy })}
               </p>
             </div>
           ))}
@@ -100,7 +103,8 @@ export function BadgesCatalog() {
       )}
 
       <h2 className="mt-12 flex items-center gap-2 font-heading text-xl font-semibold tracking-tight">
-        <Scroll className="size-5 text-primary" weight="duotone" /> {t("certificates")}
+        <Scroll className="size-5 text-primary" weight="duotone" />{" "}
+        {t("certificates")}
       </h2>
       {!authed ? (
         <p className="mt-3 text-sm text-muted-foreground">{t("loginHint")}</p>
@@ -111,13 +115,23 @@ export function BadgesCatalog() {
       ) : (
         <ul className="mt-4 divide-y divide-border rounded-[1.25rem] border">
           {certs.map((cert) => (
-            <li key={cert.code} className="flex flex-wrap items-center gap-4 px-5 py-4">
-              <Medal className="size-5 shrink-0 text-primary" weight="duotone" />
+            <li
+              key={cert.code}
+              className="flex flex-wrap items-center gap-4 px-5 py-4"
+            >
+              <Medal
+                className="size-5 shrink-0 text-primary"
+                weight="duotone"
+              />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-semibold">{cert.title}</span>
+                <span className="block truncate text-sm font-semibold">
+                  {cert.title}
+                </span>
                 <span className="block font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
                   {t("code")} {cert.code} ·{" "}
-                  {new Date(cert.issuedAt).toLocaleDateString(undefined, { dateStyle: "medium" })}
+                  {new Date(cert.issuedAt).toLocaleDateString(undefined, {
+                    dateStyle: "medium",
+                  })}
                 </span>
               </span>
               <a

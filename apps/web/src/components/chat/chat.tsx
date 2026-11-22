@@ -1,8 +1,9 @@
 "use client";
 
 import { ChatTeardropText, PaperPlaneRight } from "@phosphor-icons/react";
-import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { apiJson } from "@/lib/api";
+import { useTranslations } from "@/lib/i18n";
 
 type Message = {
   id: number;
@@ -39,7 +40,7 @@ export function Chat() {
 
   useEffect(() => {
     let alive = true;
-    fetch("/api/chat/conversations", {
+    apiJson<{ conversation: { id: string } }>("/api/chat/conversations", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -47,8 +48,7 @@ export function Chat() {
       },
       body: JSON.stringify({}),
     })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((data: { conversation: { id: string } }) => {
+      .then((data) => {
         if (!alive) return;
         conversationId.current = data.conversation.id;
         setMessages([
@@ -75,9 +75,12 @@ export function Chat() {
     if (!content || sending || !conversationId.current) return;
     setSending(true);
     setError(false);
-    setMessages((prev) => [...prev, { id: nextMessageId(), role: "user", content }]);
+    setMessages((prev) => [
+      ...prev,
+      { id: nextMessageId(), role: "user", content },
+    ]);
     setInput("");
-    fetch(`/api/chat/conversations/${conversationId.current}/messages`, {
+    apiJson<{ assistantMessage?: { content: string }; message?: { content: string }; content?: string }>(`/api/chat/conversations/${conversationId.current}/messages`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -85,42 +88,52 @@ export function Chat() {
       },
       body: JSON.stringify({ content }),
     })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then(
-        (data: {
-          assistantMessage?: { content: string };
-          message?: { content: string };
-          content?: string;
-        }) => {
-          const answer =
-            data.assistantMessage?.content ??
-            data.message?.content ??
-            data.content ??
-            "";
-          setMessages((prev) => [
-            ...prev,
-            { id: nextMessageId(), role: "assistant", content: answer },
-          ]);
-        },
-      )
+      .then((data) => {
+        const answer =
+          data.assistantMessage?.content ??
+          data.message?.content ??
+          data.content ??
+          "";
+        setMessages((prev) => [
+          ...prev,
+          { id: nextMessageId(), role: "assistant", content: answer },
+        ]);
+      })
       .catch(() => setError(true))
       .finally(() => setSending(false));
   };
 
   return (
-    <section className="mx-3 md:m-12 mb-6 rounded-[2rem] border px-8 py-12">
-      <h1 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">
-        {t("title")}
-      </h1>
-      <p className="mt-3 max-w-[65ch] text-sm text-muted-foreground">
-        {t("subtitle")}
-      </p>
+    <section className="mx-auto w-full max-w-[1280px] px-5 pb-20 pt-32 md:px-8 md:pt-36">
+      <header className="grid gap-6 border-b border-border pb-8 md:grid-cols-[1fr_280px] md:items-end">
+        <div>
+          <p className="text-sm font-medium text-primary">Konsultasi awal</p>
+          <h1 className="mt-3 font-heading text-5xl font-medium tracking-tight md:text-6xl">
+            {t("title")}
+          </h1>
+          <p className="mt-4 max-w-[55ch] text-sm leading-7 text-muted-foreground">
+            Ajukan pertanyaan umum tentang narkoba, gejala, atau langkah awal
+            meminta bantuan.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-border p-5">
+          <ChatTeardropText
+            size={24}
+            className="text-primary"
+            weight="duotone"
+          />
+          <p className="mt-3 text-xs leading-5 text-muted-foreground">
+            Percakapan anonim. Untuk keadaan darurat, hubungi layanan setempat
+            segera.
+          </p>
+        </div>
+      </header>
 
-      <div className="mt-8 max-w-[40rem]">
-        <div className="rounded-[1.25rem] border">
+      <div className="mt-8 grid max-w-[880px]">
+        <div className="overflow-hidden rounded-2xl border border-border bg-card">
           <div
             ref={listRef}
-            className="max-h-[50dvh] space-y-3 overflow-y-auto p-5"
+            className="min-h-[420px] max-h-[50dvh] space-y-3 overflow-y-auto p-5 md:p-6"
             aria-live="polite"
           >
             {messages.length === 0 ? (
@@ -133,7 +146,7 @@ export function Chat() {
                 >
                   <span
                     className={
-                      "inline-block max-w-[85%] rounded-2xl px-4 py-2 text-left text-sm " +
+                      "inline-block max-w-[85%] rounded-lg px-4 py-3 text-left text-sm leading-6 " +
                       (message.role === "user"
                         ? "bg-primary text-primary-foreground"
                         : "border border-border bg-muted")

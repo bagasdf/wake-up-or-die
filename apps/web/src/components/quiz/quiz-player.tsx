@@ -1,9 +1,10 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
-import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Trophy, X } from "@phosphor-icons/react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { apiJson } from "@/lib/api";
+import { useTranslations } from "@/lib/i18n";
 
 type Option = { id: string; label: string };
 type Question = { id: string; prompt: string; options: Option[] };
@@ -22,18 +23,17 @@ export function QuizPlayer({ slug }: { slug: string }) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [phase, setPhase] = useState<"loading" | "playing" | "sending" | "done" | "error">(
-    "loading",
-  );
+  const [phase, setPhase] = useState<
+    "loading" | "playing" | "sending" | "done" | "error"
+  >("loading");
   const [review, setReview] = useState<ReviewItem[]>([]);
   const [score, setScore] = useState(0);
   const [passed, setPassed] = useState(false);
 
   useEffect(() => {
     let alive = true;
-    fetch(`/api/quizzes/${slug}`)
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((data: { title: string; questions: Question[] }) => {
+    apiJson<{ title: string; questions: Question[] }>(`/api/quizzes/${slug}`)
+      .then((data) => {
         if (!alive) return;
         setQuiz({ title: data.title });
         setQuestions(data.questions);
@@ -56,20 +56,24 @@ export function QuizPlayer({ slug }: { slug: string }) {
       return;
     }
     setPhase("sending");
-    fetch(`/api/quizzes/${slug}/attempts`, {
+    apiJson<{ score: number; passed: boolean; review: ReviewItem[] }>(`/api/quizzes/${slug}/attempts`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        answers: questions.map((q) => ({ questionId: q.id, optionId: answers[q.id] ?? "" })),
+        answers: questions.map((q) => ({
+          questionId: q.id,
+          optionId: answers[q.id] ?? "",
+        })),
       }),
     })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((data: { score: number; passed: boolean; review: ReviewItem[] }) => {
-        setScore(data.score);
-        setPassed(data.passed);
-        setReview(data.review);
-        setPhase("done");
-      })
+      .then(
+        (data) => {
+          setScore(data.score);
+          setPassed(data.passed);
+          setReview(data.review);
+          setPhase("done");
+        },
+      )
       .catch(() => setPhase("error"));
   };
 
@@ -113,13 +117,21 @@ export function QuizPlayer({ slug }: { slug: string }) {
             <li key={item.questionId} className="py-4">
               <p className="flex items-start gap-2 text-sm font-semibold">
                 {item.correct ? (
-                  <Check className="mt-0.5 size-4 shrink-0 text-primary" weight="bold" />
+                  <Check
+                    className="mt-0.5 size-4 shrink-0 text-primary"
+                    weight="bold"
+                  />
                 ) : (
-                  <X className="mt-0.5 size-4 shrink-0 text-destructive" weight="bold" />
+                  <X
+                    className="mt-0.5 size-4 shrink-0 text-destructive"
+                    weight="bold"
+                  />
                 )}
                 {item.prompt}
               </p>
-              <p className="mt-1 text-sm text-muted-foreground">{item.explanation}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {item.explanation}
+              </p>
             </li>
           ))}
         </ul>
@@ -167,7 +179,9 @@ export function QuizPlayer({ slug }: { slug: string }) {
               <button
                 key={option.id}
                 type="button"
-                onClick={() => setAnswers((prev) => ({ ...prev, [current.id]: option.id }))}
+                onClick={() =>
+                  setAnswers((prev) => ({ ...prev, [current.id]: option.id }))
+                }
                 className={
                   "flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left text-sm transition-colors " +
                   (selected === option.id

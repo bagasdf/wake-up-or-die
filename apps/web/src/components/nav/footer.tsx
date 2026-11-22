@@ -1,83 +1,62 @@
+import Image from "next/image";
+import Link from "next/link";
+
+const links = [
+  ["Artikel", "/articles"],
+  ["Kuis", "/quiz"],
+  ["Bantuan", "/directory"],
+  ["Konsultasi", "/chat"],
+  ["Laporkan", "/reports"],
+] as const;
+
 export function Footer() {
   return (
-    <footer className="border-t bg-background py-16">
-      <div className="max-w-[1280px] mx-auto px-6 flex flex-col items-center text-center">
-        {/* Brand mark: logo + name on same baseline, centered on its own line */}
-        <div className="flex items-center gap-3">
-          <svg
-            className="size-8 text-primary fill-current"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
+    <footer className="border-t border-border/70 bg-background">
+      <div className="mx-auto max-w-[1280px] px-5 py-12 md:px-8 md:py-16">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr] md:items-end">
+          <div>
+            <Link href="/" className="inline-flex items-center gap-3">
+              <span className="grid size-11 place-items-center rounded-xl bg-primary text-primary-foreground">
+                <Image
+                  src="/static/images/logo.svg"
+                  alt=""
+                  width={32}
+                  height={32}
+                />
+              </span>
+              <span>
+                <strong className="block font-heading text-lg">
+                  Wake Up or Die
+                </strong>
+                <span className="text-xs text-muted-foreground">
+                  Sadar, kuat, bebas narkoba.
+                </span>
+              </span>
+            </Link>
+            <p className="mt-5 max-w-[50ch] text-sm leading-7 text-muted-foreground">
+              Platform edukasi anti narkoba berbasis bukti untuk pelajar,
+              keluarga, dan masyarakat.
+            </p>
+          </div>
+          <nav
+            aria-label="Navigasi footer"
+            className="flex flex-wrap gap-x-5 gap-y-3 md:justify-end"
           >
-            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-          </svg>
-          <span className="font-heading text-xl font-semibold tracking-tighter">
-            Brand
-          </span>
+            {links.map(([label, href]) => (
+              <Link
+                key={href}
+                href={href}
+                className="text-sm font-medium text-muted-foreground transition hover:text-primary"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
         </div>
-
-        {/* Tagline paragraph directly below brand mark, moderate reading width */}
-        <p className="mt-4 max-w-[60ch] text-sm text-muted-foreground">
-          A clean, centered footer with brand mark, tagline, navigation links,
-          and copyright line.
-        </p>
-
-        {/* Horizontal navigation row, centered as a group directly below tagline */}
-        <nav className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2">
-          <a
-            href="/"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            Home
-          </a>
-          <a
-            href="/articles"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            Articles
-          </a>
-          <a
-            href="/quiz"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            Quiz
-          </a>
-          <a
-            href="/calculator"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            Calculator
-          </a>
-          <a
-            href="/directory"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            Directory
-          </a>
-          <a
-            href="/chat"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            Chat
-          </a>
-          <a
-            href="/badges"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            Badges
-          </a>
-          <a
-            href="/gallery"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            Gallery
-          </a>
-        </nav>
-
-        {/* Copyright line on its own line at the bottom, comfortable vertical space above it */}
-        <p className="mt-10 text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} Brand. All rights reserved.
-        </p>
+        <div className="mt-10 flex flex-col gap-3 border-t border-border/70 pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <p>© 2026 SMKN 6 Kota Tangerang Selatan — Kelompok 6 RPL 2.</p>
+          <p>Informasi edukasi. Bukan pengganti bantuan medis profesional.</p>
+        </div>
       </div>
     </footer>
   );

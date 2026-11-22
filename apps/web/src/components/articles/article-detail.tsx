@@ -2,15 +2,19 @@
 
 import { ArrowLeft, ChatCircle, PaperPlaneRight } from "@phosphor-icons/react";
 import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Link } from "@/i18n/navigation";
+import { apiJson } from "@/lib/api";
+import { createMarkdownRenderer } from "fumadocs-core/content/md";
+import { useLocale, useTranslations } from "@/lib/i18n";
+
+const { Markdown } = createMarkdownRenderer();
 
 const posters = [
   "/static/images/poster-1.png",
   "/static/images/poster-2.png",
   "/static/images/poster-3.png",
-  "/static/images/poster-4.png"
+  "/static/images/poster-4.png",
 ];
 
 type Article = {
@@ -48,11 +52,8 @@ export function ArticleDetail({ slug }: { slug: string }) {
   useEffect(() => {
     let alive = true;
     setState("loading");
-    fetch(`/api/articles/${slug}`)
-      .then((res) =>
-        res.ok ? res.json() : res.status === 404 ? null : Promise.reject(),
-      )
-      .then((data: Article | null) => {
+    apiJson<Article>(`/api/articles/${slug}`)
+      .then((data) => {
         if (!alive) return;
         if (!data) {
           setState("notfound");
@@ -166,10 +167,8 @@ export function ArticleDetail({ slug }: { slug: string }) {
           className="object-cover"
         />
       </div>
-      <div className="mt-8 max-w-[65ch] space-y-4 text-[15px] leading-relaxed">
-        {article.content.split(/\n\s*\n/).map((paragraph, i) => (
-          <p key={i}>{paragraph}</p>
-        ))}
+      <div className="prose mt-8 max-w-[65ch] text-[15px]">
+        <Markdown>{article.content}</Markdown>
       </div>
 
       {article.related.length > 0 ? (

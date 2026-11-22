@@ -1,13 +1,24 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { Medal, Scroll, Target } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
+import { useTranslations } from "@/lib/i18n";
+import { apiJson } from "@/lib/api";
 
 type Me = {
   user: { name: string | null; email: string; createdAt: string };
-  stats: { points: number; quizzesPassed: number; articlesRead: number; commentsApproved: number };
-  recentAttempts: Array<{ quizTitle: string; score: number; passed: boolean; completedAt: string }>;
+  stats: {
+    points: number;
+    quizzesPassed: number;
+    articlesRead: number;
+    commentsApproved: number;
+  };
+  recentAttempts: Array<{
+    quizTitle: string;
+    score: number;
+    passed: boolean;
+    completedAt: string;
+  }>;
   recentCertificates: Array<{ code: string; title: string; issuedAt: string }>;
 };
 
@@ -18,10 +29,12 @@ export function Profile() {
 
   useEffect(() => {
     let alive = true;
-    fetch("/api/me")
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((data: Me) => {
-        if (alive) setMe(data);
+    apiJson<Me>("/api/me")
+      .then((data) => {
+        if (alive) {
+          if (!data?.user) throw new Error("Invalid profile response");
+          setMe(data);
+        }
       })
       .catch(() => {
         if (alive) setError(true);
@@ -32,9 +45,27 @@ export function Profile() {
   }, []);
 
   return (
-    <section className="mx-3 md:m-12 mb-6 rounded-[2rem] border px-8 py-12">
-      <h1 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">{t("title")}</h1>
-      <p className="mt-3 max-w-[65ch] text-sm text-muted-foreground">{t("subtitle")}</p>
+    <section className="mx-auto w-full max-w-[1280px] px-5 pb-20 pt-32 md:px-8 md:pt-36">
+      <header className="grid gap-6 border-b border-border pb-8 md:grid-cols-[1fr_280px] md:items-end">
+        <div>
+          <p className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-primary">
+            Area pengguna
+          </p>
+          <h1 className="mt-3 font-heading text-5xl font-semibold tracking-tight md:text-6xl">
+            Profil & pencapaian.
+          </h1>
+        </div>
+        {me && (
+          <div className="rounded-2xl border border-border p-5">
+            <p className="font-heading text-lg font-semibold">
+              {me.user.name ?? "Pengguna"}
+            </p>
+            <p className="mt-1 truncate text-sm text-muted-foreground">
+              {me.user.email}
+            </p>
+          </div>
+        )}
+      </header>
 
       {error ? (
         <p className="mt-8 text-sm text-destructive">
@@ -58,8 +89,12 @@ export function Profile() {
               return (
                 <div key={i} className="rounded-[1.25rem] border p-5">
                   <Icon className="size-5 text-primary" weight="duotone" />
-                  <p className="mt-3 font-mono text-2xl tracking-tight">{String(value)}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{label as string}</p>
+                  <p className="mt-3 font-mono text-2xl tracking-tight">
+                    {String(value)}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {label as string}
+                  </p>
                 </div>
               );
             })}
@@ -71,11 +106,16 @@ export function Profile() {
                 {t("attempts")}
               </h2>
               {me.recentAttempts.length === 0 ? (
-                <p className="mt-3 text-sm text-muted-foreground">{t("empty")}</p>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {t("empty")}
+                </p>
               ) : (
                 <ul className="mt-4 divide-y divide-border">
                   {me.recentAttempts.map((attempt, i) => (
-                    <li key={i} className="flex items-center justify-between py-3 text-sm">
+                    <li
+                      key={i}
+                      className="flex items-center justify-between py-3 text-sm"
+                    >
                       <span className="truncate">{attempt.quizTitle}</span>
                       <span className="font-mono text-xs">
                         {t("score", { score: attempt.score })} ·{" "}
@@ -91,11 +131,16 @@ export function Profile() {
                 {t("certificates")}
               </h2>
               {me.recentCertificates.length === 0 ? (
-                <p className="mt-3 text-sm text-muted-foreground">{t("empty")}</p>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {t("empty")}
+                </p>
               ) : (
                 <ul className="mt-4 divide-y divide-border">
                   {me.recentCertificates.map((cert) => (
-                    <li key={cert.code} className="flex items-center justify-between py-3 text-sm">
+                    <li
+                      key={cert.code}
+                      className="flex items-center justify-between py-3 text-sm"
+                    >
                       <span className="truncate">{cert.title}</span>
                       <span className="font-mono text-xs">{cert.code}</span>
                     </li>
@@ -107,8 +152,10 @@ export function Profile() {
 
           <p className="mt-8 font-mono text-[10.5px] uppercase tracking-[0.22em] text-muted-foreground">
             {t("memberSince")}{" "}
-            {new Date(me.user.createdAt).toLocaleDateString(undefined, { dateStyle: "medium" })} ·{" "}
-            {me.user.email}
+            {new Date(me.user.createdAt).toLocaleDateString(undefined, {
+              dateStyle: "medium",
+            })}{" "}
+            · {me.user.email}
           </p>
         </>
       ) : (

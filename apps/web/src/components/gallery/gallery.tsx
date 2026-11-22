@@ -1,8 +1,9 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { Download } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
+import { apiJson } from "@/lib/api";
+import { useTranslations } from "@/lib/i18n";
 
 const types = ["poster", "infografis", "video", "lainnya"] as const;
 
@@ -35,9 +36,8 @@ export function Gallery() {
       setError(false);
       const params = new URLSearchParams({ perPage: "24" });
       if (type) params.set("type", type);
-      fetch(`/api/gallery?${params}`)
-        .then((res) => (res.ok ? res.json() : Promise.reject()))
-        .then((data: { items: Asset[] }) => {
+      apiJson<{ items: Asset[] }>(`/api/gallery?${params}`)
+        .then((data) => {
           if (alive) setItems(data.items ?? []);
         })
         .catch(() => {
@@ -51,11 +51,18 @@ export function Gallery() {
   }, [type]);
 
   return (
-    <section className="mx-3 md:m-12 mb-6 rounded-[2rem] border px-8 py-12">
-      <h1 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">
-        {t("title")}
-      </h1>
-      <p className="mt-3 max-w-[65ch] text-sm text-muted-foreground">{t("subtitle")}</p>
+    <section className="mx-auto w-full max-w-[1280px] px-5 pb-20 pt-32 md:px-8 md:pt-36">
+      <header className="border-b border-border pb-8">
+        <p className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-primary">
+          Media kampanye
+        </p>
+        <h1 className="mt-3 font-heading text-5xl font-semibold tracking-tight md:text-6xl">
+          Poster & infografis.
+        </h1>
+        <p className="mt-4 max-w-[55ch] text-sm leading-7 text-muted-foreground">
+          Unduh bahan visual untuk kampanye, kelas, atau komunitas.
+        </p>
+      </header>
 
       <div className="mt-8 flex flex-wrap gap-2">
         <button
@@ -92,7 +99,10 @@ export function Gallery() {
       ) : items === null ? (
         <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="animate-pulse aspect-[3/4] rounded-[1.25rem] bg-muted" />
+            <div
+              key={i}
+              className="animate-pulse aspect-[3/4] rounded-[1.25rem] bg-muted"
+            />
           ))}
         </div>
       ) : items.length === 0 ? (
@@ -102,11 +112,18 @@ export function Gallery() {
           {items.map((item, i) => {
             const href = item.url ?? `/api/media/${item.fileKey ?? ""}`;
             return (
-              <div key={item.id} className="overflow-hidden rounded-[1.25rem] border">
+              <div
+                key={item.id}
+                className="overflow-hidden rounded-[1.25rem] border"
+              >
                 <div className="relative aspect-[3/4] bg-muted">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={item.thumbnailUrl ?? item.url ?? fallbacks[i % fallbacks.length]}
+                    src={
+                      item.thumbnailUrl ??
+                      item.url ??
+                      fallbacks[i % fallbacks.length]
+                    }
                     alt={item.title}
                     className="absolute inset-0 size-full object-cover"
                   />
@@ -124,7 +141,8 @@ export function Gallery() {
                       download
                       className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-lg border border-border px-3 text-xs font-medium hover:border-primary/50"
                     >
-                      <Download className="size-3.5" weight="bold" /> {t("download")}
+                      <Download className="size-3.5" weight="bold" />{" "}
+                      {t("download")}
                     </a>
                   ) : null}
                 </div>

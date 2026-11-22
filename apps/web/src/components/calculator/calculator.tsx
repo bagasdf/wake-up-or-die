@@ -1,14 +1,11 @@
 "use client";
 
-import {
-  Calculator as CalculatorIcon,
-  Receipt,
-  Warning,
-} from "@phosphor-icons/react";
-import { useLocale, useTranslations } from "next-intl";
+import { Calculator as CalculatorIcon, Warning } from "@phosphor-icons/react";
 import { useState } from "react";
+import { useLocale } from "@/lib/i18n";
 
 type Result = {
+  monthlySpend?: number;
   months: number;
   totalSpent: number;
   investmentGain: number;
@@ -28,7 +25,6 @@ type Result = {
 };
 
 export function Calculator() {
-  const t = useTranslations("calculator");
   const locale = useLocale();
   const [monthlySpend, setMonthlySpend] = useState("");
   const [durationYears, setDurationYears] = useState("");
@@ -37,14 +33,12 @@ export function Calculator() {
   const [result, setResult] = useState<Result | null>(null);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(false);
-
   const formatIDR = (value: number) =>
     new Intl.NumberFormat(locale, {
       style: "currency",
       currency: "IDR",
       maximumFractionDigits: 0,
     }).format(value);
-
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
     setSending(true);
@@ -64,161 +58,197 @@ export function Calculator() {
       .catch(() => setError(true))
       .finally(() => setSending(false));
   };
-
   const rows: Array<[string, number]> = result
     ? [
-        [t("spent"), result.totalSpent],
-        [t("investment"), result.investmentGain],
-        [t("career"), result.careerLoss],
-        [t("health"), result.healthCost],
-        [t("legal"), result.legalCost],
+        ["Pengeluaran", result.totalSpent],
+        ["Nilai investasi hilang", result.investmentGain],
+        ["Potensi karier", result.careerLoss],
+        ["Biaya kesehatan", result.healthCost],
+        ["Risiko hukum", result.legalCost],
       ]
     : [];
 
   return (
-    <section className="mx-3 md:m-12 mb-6 rounded-[2rem] border px-8 py-12">
-      <h1 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">
-        {t("title")}
-      </h1>
-      <p className="mt-3 max-w-[65ch] text-sm text-muted-foreground">
-        {t("subtitle")}
-      </p>
-
-      <form
-        onSubmit={submit}
-        className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-2"
-      >
-        <label className="block">
-          <span className="text-sm font-medium">{t("monthlySpend")}</span>
-          <input
-            type="number"
-            min={0}
-            required
-            value={monthlySpend}
-            onChange={(e) => setMonthlySpend(e.target.value)}
-            className="mt-1 h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
-          />
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium">{t("durationYears")}</span>
-          <input
-            type="number"
-            min={0.1}
-            max={50}
-            step={0.5}
-            required
-            value={durationYears}
-            onChange={(e) => setDurationYears(e.target.value)}
-            className="mt-1 h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
-          />
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium">{t("monthlyIncome")}</span>
-          <input
-            type="number"
-            min={0}
-            value={monthlyIncome}
-            onChange={(e) => setMonthlyIncome(e.target.value)}
-            className="mt-1 h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
-          />
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium">{t("age")}</span>
-          <input
-            type="number"
-            min={10}
-            max={90}
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-            className="mt-1 h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
-          />
-        </label>
-        <div className="md:col-span-2">
+    <section className="mx-auto w-full max-w-[1280px] px-5 pb-20 pt-32 md:px-8 md:pt-36">
+      <header className="border-b border-border pb-8">
+        <p className="text-sm font-medium text-primary">Simulasi dampak</p>
+        <h1 className="mt-3 font-heading text-5xl font-medium tracking-tight md:text-6xl">
+          Hitung kerugiannya.
+        </h1>
+        <p className="mt-4 max-w-[55ch] text-sm leading-7 text-muted-foreground">
+          Perkirakan konsekuensi finansial dan peluang masa depan untuk membuat
+          keputusan yang lebih sadar.
+        </p>
+      </header>
+      <div className="mt-8 grid gap-5 lg:grid-cols-[0.75fr_1.25fr]">
+        <form
+          onSubmit={submit}
+          className="h-fit rounded-2xl border border-border bg-card p-5 md:p-6"
+        >
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            <label className="block">
+              <span className="text-xs font-bold">Pengeluaran per bulan</span>
+              <div className="mt-2 flex h-12 items-center rounded-xl border border-input px-3">
+                <span className="mr-2 text-sm text-muted-foreground">Rp</span>
+                <input
+                  type="number"
+                  min={0}
+                  required
+                  value={monthlySpend}
+                  onChange={(event) => setMonthlySpend(event.target.value)}
+                  className="h-full w-full bg-transparent text-sm outline-none"
+                />
+              </div>
+            </label>
+            <label className="block">
+              <span className="text-xs font-bold">Durasi estimasi</span>
+              <div className="mt-2 flex h-12 items-center rounded-xl border border-input px-3">
+                <input
+                  type="number"
+                  min={0.1}
+                  max={50}
+                  step={0.5}
+                  required
+                  value={durationYears}
+                  onChange={(event) => setDurationYears(event.target.value)}
+                  className="h-full w-full bg-transparent text-sm outline-none"
+                />
+                <span className="text-sm text-muted-foreground">tahun</span>
+              </div>
+            </label>
+            <label className="block">
+              <span className="text-xs font-bold">
+                Penghasilan per bulan{" "}
+                <span className="text-muted-foreground">(opsional)</span>
+              </span>
+              <div className="mt-2 flex h-12 items-center rounded-xl border border-input px-3">
+                <span className="mr-2 text-sm text-muted-foreground">Rp</span>
+                <input
+                  type="number"
+                  min={0}
+                  value={monthlyIncome}
+                  onChange={(event) => setMonthlyIncome(event.target.value)}
+                  className="h-full w-full bg-transparent text-sm outline-none"
+                />
+              </div>
+            </label>
+            <label className="block">
+              <span className="text-xs font-bold">
+                Usia <span className="text-muted-foreground">(opsional)</span>
+              </span>
+              <div className="mt-2 flex h-12 items-center rounded-xl border border-input px-3">
+                <input
+                  type="number"
+                  min={10}
+                  max={90}
+                  value={age}
+                  onChange={(event) => setAge(event.target.value)}
+                  className="h-full w-full bg-transparent text-sm outline-none"
+                />
+                <span className="text-sm text-muted-foreground">tahun</span>
+              </div>
+            </label>
+          </div>
           <button
             type="submit"
             disabled={sending}
-            className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px disabled:opacity-50"
+            className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary text-sm font-bold text-primary-foreground disabled:opacity-50"
           >
-            <CalculatorIcon className="size-4" weight="duotone" /> {t("submit")}
+            <CalculatorIcon size={18} />{" "}
+            {sending ? "Menghitung..." : "Hitung dampak"}
           </button>
-        </div>
-      </form>
-
-      {error ? (
-        <p className="mt-6 text-sm text-destructive">
-          {t("error")}{" "}
-          <button type="button" onClick={submit} className="underline">
-            {t("retry")}
-          </button>
-        </p>
-      ) : null}
-
-      {result ? (
-        <div className="mt-10 grid grid-cols-1 gap-3 md:grid-cols-2">
-          <div className="rounded-[1.25rem] border bg-primary p-6 text-primary-foreground">
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.22em] opacity-80">
-              {t("total")}
+          {error && (
+            <p className="mt-3 text-sm text-destructive">
+              Estimasi gagal. Periksa nilai lalu coba lagi.
             </p>
-            <p className="mt-2 font-mono text-3xl tracking-tight md:text-4xl">
-              {formatIDR(result.totalImpact)}
-            </p>
-            <p className="mt-2 text-sm opacity-80">
-              {t("riskLabel")}: {t(`risk.${result.riskLevel}`)}
-            </p>
+          )}
+        </form>
+        {result ? (
+          <div className="grid gap-3">
+            <div className="rounded-2xl bg-primary p-6 text-primary-foreground md:p-8">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] opacity-70">
+                Estimasi total dampak
+              </p>
+              <p className="mt-3 font-mono text-4xl tracking-tight md:text-5xl">
+                {formatIDR(result.totalImpact)}
+              </p>
+              <p className="mt-3 text-sm opacity-80">
+                Risiko: {result.riskLevel}
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <ul className="divide-y divide-border rounded-2xl border border-border p-5">
+                {rows.map(([label, value]) => (
+                  <li
+                    key={label}
+                    className="flex items-center justify-between gap-4 py-3 text-sm"
+                  >
+                    <span className="text-muted-foreground">{label}</span>
+                    <strong className="text-right">{formatIDR(value)}</strong>
+                  </li>
+                ))}
+              </ul>
+              <div className="rounded-2xl border border-border p-5">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                  Setara dengan
+                </p>
+                <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <strong className="block text-2xl">
+                      {result.equivalents.motorcycles}
+                    </strong>
+                    <span className="text-muted-foreground">motor</span>
+                  </div>
+                  <div>
+                    <strong className="block text-2xl">
+                      {result.equivalents.laptops}
+                    </strong>
+                    <span className="text-muted-foreground">laptop</span>
+                  </div>
+                  <div>
+                    <strong className="block text-2xl">
+                      {result.equivalents.schoolSemesters}
+                    </strong>
+                    <span className="text-muted-foreground">semester</span>
+                  </div>
+                  <div>
+                    <strong className="block text-2xl">
+                      {result.equivalents.familyTrips}
+                    </strong>
+                    <span className="text-muted-foreground">liburan</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
+              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-primary">
+                <Warning size={16} /> Langkah berikutnya
+              </p>
+              <ul className="mt-3 space-y-2 text-sm leading-6">
+                {result.recommendations.map((item) => (
+                  <li key={item}>• {item}</li>
+                ))}
+              </ul>
+              <p className="mt-4 text-xs text-muted-foreground">
+                {result.disclaimer}
+              </p>
+            </div>
           </div>
-          <ul className="divide-y divide-border rounded-[1.25rem] border">
-            {rows.map(([label, value]) => (
-              <li
-                key={label}
-                className="flex items-center justify-between px-5 py-3 text-sm"
-              >
-                <span className="text-muted-foreground">{label}</span>
-                <span className="font-mono tracking-tight">
-                  {formatIDR(value)}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <div className="rounded-[1.25rem] border p-6">
-            <p className="flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.22em] text-muted-foreground">
-              <Receipt className="size-4" weight="duotone" /> {t("equivalents")}
-            </p>
-            <ul className="mt-4 grid grid-cols-2 gap-3 text-sm">
-              <li>
-                {result.equivalents.motorcycles} {t("motorcycles")}
-              </li>
-              <li>
-                {result.equivalents.laptops} {t("laptops")}
-              </li>
-              <li>
-                {result.equivalents.schoolSemesters} {t("schoolSemesters")}
-              </li>
-              <li>
-                {result.equivalents.familyTrips} {t("familyTrips")}
-              </li>
-            </ul>
+        ) : (
+          <div className="grid min-h-[420px] place-items-center rounded-2xl border border-dashed border-border bg-muted/20 p-8 text-center">
+            <div>
+              <CalculatorIcon
+                size={48}
+                weight="thin"
+                className="mx-auto text-muted-foreground"
+              />
+              <p className="mt-4 text-sm text-muted-foreground">
+                Masukkan estimasi untuk melihat potensi dampak.
+              </p>
+            </div>
           </div>
-          <div className="rounded-[1.25rem] border p-6">
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-muted-foreground">
-              {t("recommendations")}
-            </p>
-            <ul className="mt-4 space-y-2 text-sm">
-              {result.recommendations.map((item) => (
-                <li key={item} className="flex gap-2">
-                  <Warning
-                    className="mt-0.5 size-4 shrink-0 text-primary"
-                    weight="duotone"
-                  />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <p className="text-xs text-muted-foreground md:col-span-2">
-            {result.disclaimer}
-          </p>
-        </div>
-      ) : null}
+        )}
+      </div>
     </section>
   );
 }

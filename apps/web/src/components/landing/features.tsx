@@ -1,15 +1,15 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import {
   Calculator,
   ChatTeardropText,
-  NotePencil,
   Newspaper,
+  NotePencil,
   PhoneCall,
   Question,
 } from "@phosphor-icons/react";
-import { Link } from "@/i18n/navigation";
+import Link from "next/link";
+import { useTranslations } from "@/lib/i18n";
 
 const iconClass = "size-6";
 
@@ -70,7 +70,14 @@ export function Features() {
         {items.map((item) => (
           <Link
             key={item.key}
-            href={item.href}
+            href={
+              item.href as
+                | "/articles"
+                | "/quiz"
+                | "/calculator"
+                | "/directory"
+                | "/chat"
+            }
             className={
               "group rounded-[1.25rem] border p-6 transition-colors hover:border-primary/50 " +
               item.span +

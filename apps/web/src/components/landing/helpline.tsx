@@ -1,8 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { PhoneCall } from "@phosphor-icons/react";
+import Link from "next/link";
+import { useTranslations } from "@/lib/i18n";
 
 import { useHome } from "./home-data";
 

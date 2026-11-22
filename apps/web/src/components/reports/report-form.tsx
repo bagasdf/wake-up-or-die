@@ -1,8 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { PaperPlaneRight, Ticket } from "@phosphor-icons/react";
+import { PaperPlaneRight, ShieldCheck, Ticket } from "@phosphor-icons/react";
 import { useState } from "react";
+import { useTranslations } from "@/lib/i18n";
 
 export function ReportForm() {
   const t = useTranslations("report");
@@ -37,14 +37,29 @@ export function ReportForm() {
   };
 
   const inputClass =
-    "mt-1 h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50";
+    "mt-2 h-12 w-full rounded-xl border border-input bg-background px-4 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50";
 
   return (
-    <section className="mx-3 md:m-12 mb-6 rounded-[2rem] border px-8 py-12">
-      <h1 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">
-        {t("title")}
-      </h1>
-      <p className="mt-3 max-w-[65ch] text-sm text-muted-foreground">{t("subtitle")}</p>
+    <section className="mx-auto w-full max-w-[1280px] px-5 pb-20 pt-32 md:px-8 md:pt-36">
+      <header className="grid gap-6 border-b border-border pb-8 md:grid-cols-[1fr_280px] md:items-end">
+        <div>
+          <p className="text-sm font-medium text-primary">Ruang aman</p>
+          <h1 className="mt-3 font-heading text-5xl font-medium tracking-tight md:text-6xl">
+            Laporkan atau konsultasi.
+          </h1>
+          <p className="mt-4 max-w-[55ch] text-sm leading-7 text-muted-foreground">
+            Sampaikan indikasi penyalahgunaan atau kebutuhan konsultasi secara
+            rahasia.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
+          <ShieldCheck size={24} className="text-primary" />
+          <p className="mt-3 text-xs leading-5 text-muted-foreground">
+            Pilihan kontak bersifat opsional. Identitas tetap dapat
+            dirahasiakan.
+          </p>
+        </div>
+      </header>
 
       {ticket ? (
         <div className="mt-8 flex items-center gap-3 rounded-[1.25rem] border border-primary/40 bg-primary/10 p-6">
@@ -66,7 +81,10 @@ export function ReportForm() {
         </div>
       ) : null}
 
-      <form onSubmit={submit} className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-2">
+      <form
+        onSubmit={submit}
+        className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-2"
+      >
         <label className="block">
           <span className="text-sm font-medium">{t("category")}</span>
           <select

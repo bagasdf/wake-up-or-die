@@ -839,7 +839,6 @@ const Dither = ({
       <canvas
         ref={canvasRef}
         className="absolute inset-0 block h-full w-full"
-        aria-hidden="true"
       />
     </div>
   );

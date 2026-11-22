@@ -1,8 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
+import Link from "next/link";
+import { useTranslations } from "@/lib/i18n";
 
 import { useHome } from "./home-data";
 
@@ -10,7 +10,7 @@ const posters = [
   "/static/images/poster-1.png",
   "/static/images/poster-2.png",
   "/static/images/poster-3.png",
-  "/static/images/poster-4.png"
+  "/static/images/poster-4.png",
 ];
 
 function cover(slug: string, url: string | null) {
