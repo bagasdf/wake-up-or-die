@@ -42,8 +42,8 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
     "mt-2 h-12 w-full rounded-xl border border-input bg-background px-4 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50";
 
   return (
-    <section className="mx-auto grid min-h-[720px] w-full max-w-[1280px] items-center px-5 pb-20 pt-32 md:px-8 md:pt-36 lg:grid-cols-2">
-      <div className="hidden min-h-[520px] flex-col justify-between rounded-[28px] bg-primary p-10 text-primary-foreground lg:flex">
+    <section className="auth-layout mx-auto grid min-h-[720px] w-full max-w-[1280px] items-center px-5 pb-20 pt-32 md:px-8 md:pt-36">
+      <div className="auth-aside min-h-[520px] flex-col justify-between rounded-[28px] bg-primary p-10 text-primary-foreground">
         <div>
           <p className="font-mono text-xs font-bold uppercase tracking-[0.18em] opacity-70">
             WAKE UP OR DIE
