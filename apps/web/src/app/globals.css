@@ -172,6 +172,14 @@
   display: block;
 }
 
+.footer-desktop-links {
+  display: none;
+}
+
+.footer-mobile-links {
+  display: grid;
+}
+
 @media (min-width: 64rem) {
   .navbar-brand-name {
     display: block;
@@ -183,6 +191,16 @@
 
   .navbar-menu-toggle,
   .navbar-mobile-menu {
+    display: none;
+  }
+}
+
+@media (min-width: 48rem) {
+  .footer-desktop-links {
+    display: grid;
+  }
+
+  .footer-mobile-links {
     display: none;
   }
 }

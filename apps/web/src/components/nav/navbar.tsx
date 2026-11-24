@@ -12,7 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { apiJson } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -28,11 +28,16 @@ export function Navbar() {
   const { resolvedTheme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement>(null);
   const [me, setMe] = useState<{
     user?: { name?: string | null; email: string; role?: string };
   } | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const visibleNavItems: ReadonlyArray<{
+    href: "/me" | "/articles" | "/quiz" | "/directory" | "/chat";
+    label: string;
+  }> = me?.user ? [{ href: "/me", label: "Dasbor" }, ...navItems] : navItems;
 
   useEffect(() => {
     setMounted(true);
@@ -47,7 +52,35 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => setOpen(false), []);
+  useEffect(() => {
+    if (pathname) {
+      setOpen(false);
+      setAccountOpen(false);
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!accountOpen) return;
+
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !accountMenuRef.current?.contains(event.target)
+      ) {
+        setAccountOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setAccountOpen(false);
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [accountOpen]);
 
   const toggleTheme = () => {
     document.documentElement.classList.add("theme-transition");
@@ -82,13 +115,13 @@ export function Navbar() {
           className="flex items-center gap-2.5"
           aria-label="Wake Up or Die — Beranda"
         >
-          <span className="relative grid size-9 place-items-center overflow-hidden rounded-xl bg-primary text-primary-foreground">
+          <span className="relative grid size-9 place-items-center">
             <Image
               src="/static/images/logo.svg"
               alt=""
-              width={28}
+              width={22}
               height={28}
-              className="size-7 w-auto"
+              className="h-7 w-auto"
             />
           </span>
           <span className="navbar-brand-name font-heading text-[15px] font-bold tracking-tight">
@@ -97,7 +130,7 @@ export function Navbar() {
         </Link>
 
         <div className="navbar-desktop-links absolute left-1/2 z-10 -translate-x-1/2 items-center gap-1">
-          {navItems.map((item) => {
+          {visibleNavItems.map((item) => {
             const active = item.href === pathname;
             return (
               <Link
@@ -129,7 +162,7 @@ export function Navbar() {
               <Sun size={18} />
             )}
           </button>
-          <div className="relative">
+          <div className="relative" ref={accountMenuRef}>
             <button
               type="button"
               onClick={() => setAccountOpen((value) => !value)}
@@ -156,7 +189,7 @@ export function Navbar() {
                       onClick={() => setAccountOpen(false)}
                       className="block rounded-lg px-3 py-2 text-sm hover:bg-muted"
                     >
-                      Profil & pencapaian
+                      Dasbor saya
                     </Link>
                     {me.user.role === "admin" && (
                       <Link
@@ -208,10 +241,20 @@ export function Navbar() {
 
       {open && (
         <div className="navbar-mobile-menu mx-auto mt-2 max-w-[1280px] rounded-2xl border border-border bg-background p-2 text-foreground shadow-2xl">
+          {me?.user ? (
+            <Link
+              href="/me"
+              onClick={() => setOpen(false)}
+              className="block rounded-lg px-4 py-3 text-sm font-semibold text-primary hover:bg-muted"
+            >
+              Dasbor saya
+            </Link>
+          ) : null}
           {navItems.map((item) => (
             <Link
               key={`${item.href}-${item.label}`}
               href={item.href}
+              onClick={() => setOpen(false)}
               className="block rounded-lg px-4 py-3 text-sm font-medium hover:bg-muted"
             >
               {item.label}
