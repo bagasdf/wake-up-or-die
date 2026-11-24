@@ -3,7 +3,7 @@ import { describeRoute } from "hono-openapi";
 
 import { certificates } from "@/db/schema";
 import { DEFAULT_APP_NAME } from "@/env";
-import { renderCertificateSvg } from "@/lib/certificate";
+import { renderCertificatePdf } from "@/lib/certificate";
 import { currentUser, requireUser } from "@/lib/guards";
 import { fail, ok } from "@/lib/http";
 import { commonErrorResponses, errorResponse, jsonResponse } from "@/lib/openapi";
@@ -77,10 +77,17 @@ const router = createHono()
     "/:code/download",
     describeRoute({
       tags: ["Gamification"],
-      summary: "Unduh sertifikat sebagai SVG",
+      summary: "Unduh sertifikat sebagai PDF",
       responses: {
         ...commonErrorResponses,
-        200: jsonResponse("Berkas SVG sertifikat"),
+        200: {
+          description: "Berkas PDF sertifikat",
+          content: {
+            "application/pdf": {
+              schema: { type: "string", format: "binary" },
+            },
+          },
+        },
         404: errorResponse("Kode sertifikat tidak ditemukan"),
       },
     }),
@@ -98,7 +105,7 @@ const router = createHono()
         return fail(c, 404, "Sertifikat tidak ditemukan atau kode tidak valid.");
       }
 
-      const svg = renderCertificateSvg({
+      const pdf = await renderCertificatePdf({
         title: certificate.title,
         recipientName: certificate.recipientName,
         code: certificate.code,
@@ -106,10 +113,10 @@ const router = createHono()
         appName: c.env.APP_NAME ?? DEFAULT_APP_NAME,
       });
 
-      c.header("Content-Type", "image/svg+xml; charset=utf-8");
-      c.header("Content-Disposition", `attachment; filename="${certificate.code}.svg"`);
+      c.header("Content-Type", "application/pdf");
+      c.header("Content-Disposition", `attachment; filename="${certificate.code}.pdf"`);
       c.header("Cache-Control", "public, max-age=86400");
-      return c.body(svg);
+      return c.body(new Uint8Array(pdf));
     },
   );
 

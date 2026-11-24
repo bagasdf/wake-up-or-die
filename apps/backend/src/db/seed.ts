@@ -941,6 +941,13 @@ async function seedSettings(): Promise<void> {
 }
 
 async function main(): Promise<void> {
+  if (env.SEED_QUIZZES_ONLY === "true") {
+    console.log("Menyiapkan kuis saja...");
+    await seedQuizzes();
+    console.log("Kuis siap.");
+    return;
+  }
+
   console.log("Menyiapkan data awal...");
   const adminId = await seedAdmin();
   await seedArticles(adminId);

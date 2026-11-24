@@ -239,7 +239,7 @@ export function Profile() {
                         href={`/api/certificates/${cert.code}/download`}
                         className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-medium text-primary hover:border-primary"
                       >
-                        <ArrowDown size={15} /> Unduh SVG
+                        <ArrowDown size={15} /> Unduh PDF
                       </a>
                     </li>
                   ))}

@@ -32,6 +32,7 @@ const difficultyLabels = {
 const learningCenters = [
   {
     id: "prevention",
+    accent: "#f0523a",
     title: "Pencegahan",
     description: "Kenali risiko dan latih cara mengambil keputusan aman.",
     slugs: [
@@ -44,6 +45,7 @@ const learningCenters = [
   },
   {
     id: "impact",
+    accent: "#29867e",
     title: "Dampak dan risiko",
     description: "Pahami efek zat, tanda kecanduan, dan kapan perlu bantuan.",
     slugs: [
@@ -55,6 +57,7 @@ const learningCenters = [
   },
   {
     id: "support",
+    accent: "#d59a25",
     title: "Dukungan dan pemulihan",
     description: "Belajar mendampingi teman dan menemukan pertolongan tepat.",
     slugs: [
@@ -116,9 +119,7 @@ export function QuizList() {
           <p className="font-heading text-4xl font-semibold">
             {quizzes.length || "—"}
           </p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            modul belajar tersedia
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">kuis tersedia</p>
           <Link
             href="/me"
             className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
@@ -138,8 +139,8 @@ export function QuizList() {
               Pilih pusat belajar
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Tiga jalur, sepuluh kuis. Setiap kuis berisi sedikitnya 10
-              pertanyaan.
+              Pilih satu jalur untuk menyaring kuis. Tiap jalur berisi beberapa
+              kuis dengan sedikitnya 10 pertanyaan.
             </p>
           </div>
           <button
@@ -152,27 +153,46 @@ export function QuizList() {
           </button>
         </div>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          {learningCenters.map((center) => (
+          {learningCenters.map((center, index) => (
             <button
               key={center.id}
               type="button"
               aria-pressed={activeCenter === center.id}
               onClick={() => setActiveCenter(center.id)}
-              className={`min-h-36 border-t-2 p-4 text-left transition-colors ${activeCenter === center.id ? "border-primary bg-primary/5" : "border-border hover:border-primary"}`}
+              style={{
+                backgroundColor: `color-mix(in srgb, var(--background) 91%, ${center.accent})`,
+                backgroundImage: `radial-gradient(circle, ${center.accent}30 1.2px, transparent 1.6px)`,
+                backgroundSize: "16px 16px",
+              }}
+              className={`group relative min-h-44 overflow-hidden rounded-2xl border-2 p-5 text-left shadow-[5px_5px_0_var(--color-border)] transition-all hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary ${activeCenter === center.id ? "border-primary shadow-[5px_5px_0_var(--color-primary)]" : "border-border hover:border-primary"}`}
             >
-              <span className="font-heading text-xl font-semibold">
-                {center.title}
-              </span>
-              <span className="mt-2 block text-sm leading-6 text-muted-foreground">
-                {center.description}
-              </span>
-              <span className="mt-3 block text-xs font-semibold text-primary">
-                {
-                  quizzes.filter((quiz) =>
-                    center.slugs.some((slug) => slug === quiz.slug),
-                  ).length
-                }{" "}
-                modul
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-5 -top-7 size-28 rounded-full border-[14px] opacity-30 transition-transform group-hover:rotate-12"
+                style={{ borderColor: center.accent }}
+              />
+              <span className="relative flex min-h-32 flex-col items-start">
+                <span className="rounded-full border border-foreground/20 bg-background/75 px-2.5 py-1 text-[11px] font-bold text-foreground">
+                  Jalur {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="mt-4 font-heading text-xl font-semibold">
+                  {center.title}
+                </span>
+                <span className="mt-2 block max-w-[34ch] text-sm leading-6 text-muted-foreground">
+                  {center.description}
+                </span>
+                <span
+                  className="mt-auto inline-flex items-center gap-2 pt-4 text-xs font-bold"
+                  style={{ color: center.accent }}
+                >
+                  {
+                    quizzes.filter((quiz) =>
+                      center.slugs.some((slug) => slug === quiz.slug),
+                    ).length
+                  }{" "}
+                  kuis
+                  <ArrowRight size={14} weight="bold" />
+                </span>
               </span>
             </button>
           ))}
