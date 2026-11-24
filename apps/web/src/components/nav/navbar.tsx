@@ -28,6 +28,8 @@ export function Navbar() {
   const { resolvedTheme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const [me, setMe] = useState<{
     user?: { name?: string | null; email: string; role?: string };
@@ -91,12 +93,44 @@ export function Navbar() {
     );
   };
 
-  const signOut = () => {
-    fetch("/api/auth/sign-out", { method: "POST", redirect: "follow" }).finally(
-      () => {
-        window.location.assign("/");
-      },
-    );
+  const signOut = async () => {
+    if (signingOut) return;
+    setSigningOut(true);
+    setSignOutError(null);
+
+    try {
+      const response = await fetch("/api/auth/sign-out", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "content-type": "application/json" },
+        body: "{}",
+      });
+      if (!response.ok) throw new Error("Sign out request failed");
+
+      const sessionResponse = await fetch("/api/me", {
+        credentials: "same-origin",
+        cache: "no-store",
+      });
+      if (sessionResponse.ok) {
+        const session = (await sessionResponse.json()) as {
+          user?: { email?: string };
+          data?: { user?: { email?: string } };
+        };
+        if (session.user || session.data?.user) {
+          throw new Error("Session is still active");
+        }
+      } else if (sessionResponse.status !== 401) {
+        throw new Error("Could not verify sign out");
+      }
+
+      setMe(null);
+      setAccountOpen(false);
+      setOpen(false);
+      window.location.assign("/");
+    } catch {
+      setSignOutError("Keluar gagal. Periksa koneksi, lalu coba lagi.");
+      setSigningOut(false);
+    }
   };
 
   return (
@@ -203,10 +237,20 @@ export function Navbar() {
                     <button
                       type="button"
                       onClick={signOut}
+                      disabled={signingOut}
                       className="mt-1 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-destructive hover:bg-red-50 dark:hover:bg-red-950/30"
                     >
-                      <SignOut size={16} /> Keluar
+                      <SignOut size={16} />
+                      {signingOut ? "Keluar…" : "Keluar"}
                     </button>
+                    {signOutError ? (
+                      <p
+                        role="alert"
+                        className="px-3 py-2 text-xs text-destructive"
+                      >
+                        {signOutError}
+                      </p>
+                    ) : null}
                   </>
                 ) : (
                   <>

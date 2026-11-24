@@ -1,21 +1,14 @@
 "use client";
 
 import { ArrowLeft, ChatCircle, PaperPlaneRight } from "@phosphor-icons/react";
-import Image from "next/image";
+import { createMarkdownRenderer } from "fumadocs-core/content/md";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ArticleCover } from "@/components/articles/article-cover";
 import { apiJson } from "@/lib/api";
-import { createMarkdownRenderer } from "fumadocs-core/content/md";
 import { useLocale, useTranslations } from "@/lib/i18n";
 
 const { Markdown } = createMarkdownRenderer();
-
-const posters = [
-  "/static/images/poster-1.png",
-  "/static/images/poster-2.png",
-  "/static/images/poster-3.png",
-  "/static/images/poster-4.png",
-];
 
 type Article = {
   slug: string;
@@ -156,13 +149,10 @@ export function ArticleDetail({ slug }: { slug: string }) {
         · {t("minutes", { minutes: article.readingMinutes })}
       </p>
       <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-[1.25rem] bg-muted">
-        <Image
-          src={
-            article.coverImageUrl ??
-            posters[article.slug.length % posters.length]
-          }
+        <ArticleCover
+          slug={article.slug}
+          coverImageUrl={article.coverImageUrl}
           alt={article.title}
-          fill
           sizes="(min-width: 768px) 70vw, 100vw"
           className="object-cover"
         />
@@ -261,9 +251,7 @@ export function ArticleDetail({ slug }: { slug: string }) {
             {t("comments.submit")}
           </button>
           {notice ? (
-            <div className="text-sm text-muted-foreground" role="status">
-              {notice}
-            </div>
+            <output className="text-sm text-muted-foreground">{notice}</output>
           ) : null}
         </form>
       </div>

@@ -1,9 +1,9 @@
 "use client";
 
 import { MagnifyingGlass } from "@phosphor-icons/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ArticleCover } from "@/components/articles/article-cover";
 import { apiJson } from "@/lib/api";
 
 type Article = {
@@ -13,18 +13,11 @@ type Article = {
   category: string;
   coverImageUrl: string | null;
 };
-const posters = [
-  "/static/images/poster-1.png",
-  "/static/images/poster-2.png",
-  "/static/images/poster-3.png",
-  "/static/images/poster-4.png",
-];
-
 export function ArticleList() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [query, setQuery] = useState("");
   useEffect(() => {
-    apiJson<{ items?: Article[] }>('/api/articles')
+    apiJson<{ items?: Article[] }>("/api/articles")
       .then((d) => setArticles(d?.items ?? []))
       .catch(() => setArticles([]));
   }, []);
@@ -63,17 +56,17 @@ export function ArticleList() {
         </div>
       ) : (
         <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((article, index) => (
+          {filtered.map((article) => (
             <Link
               key={article.slug}
               href={`/articles/${article.slug}`}
               className="group overflow-hidden border-b border-border bg-card pb-5 transition-colors hover:border-primary"
             >
               <div className="relative aspect-[16/10] overflow-hidden">
-                <Image
-                  src={article.coverImageUrl ?? posters[index % posters.length]}
+                <ArticleCover
+                  slug={article.slug}
+                  coverImageUrl={article.coverImageUrl}
                   alt={article.title}
-                  fill
                   sizes="(min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw"
                   className="object-cover transition duration-500 group-hover:scale-[1.03]"
                 />
