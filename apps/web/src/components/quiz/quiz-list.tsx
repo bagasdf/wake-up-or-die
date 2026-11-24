@@ -1,6 +1,12 @@
 "use client";
 
-import { ArrowRight, CheckCircle, Timer } from "@phosphor-icons/react";
+import {
+  ArrowRight,
+  BookOpenText,
+  CheckCircle,
+  MagnifyingGlass,
+  Timer,
+} from "@phosphor-icons/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { apiJson } from "@/lib/api";
@@ -9,62 +15,146 @@ type Quiz = {
   slug: string;
   title: string;
   description: string;
+  difficulty: "easy" | "medium" | "hard";
+  timeLimitSeconds: number;
   questionCount?: number;
 };
 
+const difficultyLabels = {
+  easy: "Dasar",
+  medium: "Menengah",
+  hard: "Lanjutan",
+} as const;
+
 export function QuizList() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
+  const [difficulty, setDifficulty] = useState<string>("all");
   useEffect(() => {
-    apiJson<Quiz[]>('/api/quizzes')
+    apiJson<Quiz[]>("/api/quizzes")
       .then((d) => setQuizzes(Array.isArray(d) ? d : []))
-      .catch(() => setQuizzes([]));
+      .catch(() => setQuizzes([]))
+      .finally(() => setLoading(false));
   }, []);
+
+  const visibleQuizzes = quizzes.filter((quiz) => {
+    const matchesQuery = `${quiz.title} ${quiz.description}`
+      .toLocaleLowerCase("id")
+      .includes(query.toLocaleLowerCase("id"));
+    return (
+      matchesQuery && (difficulty === "all" || quiz.difficulty === difficulty)
+    );
+  });
+
   return (
     <section className="mx-auto w-full max-w-[1280px] px-5 pb-20 pt-32 md:px-8 md:pt-36">
-      <header className="grid gap-6 rounded-[28px] bg-primary p-7 text-primary-foreground md:grid-cols-[1fr_280px] md:items-end md:p-12">
+      <header className="grid gap-6 border-b border-border pb-9 md:grid-cols-[1fr_280px] md:items-end md:pb-12">
         <div>
-          <p className="text-sm font-medium text-primary-foreground/70">
-            Tes pengetahuan
+          <p className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+            <BookOpenText size={18} weight="duotone" /> Pusat belajar
           </p>
-          <h1 className="mt-3 max-w-[16ch] font-heading text-5xl font-medium leading-[0.95] tracking-tight md:text-6xl">
-            Seberapa siap kamu mengenali risiko?
+          <h1 className="mt-4 max-w-[14ch] font-heading text-5xl font-medium leading-[0.98] tracking-tight md:text-7xl">
+            Belajar mengenali risiko.
           </h1>
-        </div>
-        <div className="rounded-2xl border border-white/20 p-5">
-          <CheckCircle size={28} weight="duotone" />
-          <p className="mt-4 text-sm leading-6 opacity-80">
-            Selesaikan kuis untuk melihat skor dan mendapatkan lencana.
+          <p className="mt-4 max-w-[54ch] text-base leading-7 text-muted-foreground">
+            Materi singkat, lalu uji pemahamanmu. Lulus kuis untuk mendapat
+            sertifikat digital.
           </p>
+        </div>
+        <div className="border-l-2 border-primary py-1 pl-5">
+          <p className="font-heading text-4xl font-semibold">
+            {quizzes.length || "—"}
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            modul belajar tersedia
+          </p>
+          <Link
+            href="/me"
+            className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+          >
+            Lihat sertifikat <ArrowRight size={16} />
+          </Link>
         </div>
       </header>
-      {quizzes.length === 0 ? (
+
+      <div className="mt-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <label className="flex h-12 items-center gap-3 rounded-xl border border-input px-4 md:w-[min(100%,360px)]">
+          <MagnifyingGlass size={18} className="text-muted-foreground" />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Cari topik belajar"
+            className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          />
+        </label>
+        <fieldset className="flex flex-wrap gap-2">
+          <legend className="sr-only">Filter tingkat kesulitan</legend>
+          {["all", "easy", "medium", "hard"].map((level) => (
+            <button
+              key={level}
+              type="button"
+              aria-pressed={difficulty === level}
+              onClick={() => setDifficulty(level)}
+              className={`rounded-full border px-4 py-2 text-sm transition-colors ${difficulty === level ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-primary"}`}
+            >
+              {level === "all"
+                ? "Semua"
+                : difficultyLabels[level as keyof typeof difficultyLabels]}
+            </button>
+          ))}
+        </fieldset>
+      </div>
+
+      {loading ? (
+        <div className="mt-8 grid gap-4 md:grid-cols-2">
+          {["one", "two", "three", "four"].map((item) => (
+            <div
+              key={item}
+              className="h-48 animate-pulse rounded-2xl bg-muted"
+            />
+          ))}
+        </div>
+      ) : quizzes.length === 0 ? (
         <div className="mt-8 rounded-2xl border border-dashed p-10 text-center">
           <Timer size={28} className="mx-auto text-muted-foreground" />
           <p className="mt-3 text-sm text-muted-foreground">
-            Kuis sedang disiapkan.
+            Materi belum tersedia. Coba lagi nanti.
           </p>
         </div>
+      ) : visibleQuizzes.length === 0 ? (
+        <p className="mt-8 rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
+          Tidak ada materi yang cocok. Ubah kata kunci atau filter.
+        </p>
       ) : (
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {quizzes.map((quiz) => (
+        <div className="mt-6 grid gap-x-6 md:grid-cols-2">
+          {visibleQuizzes.map((quiz) => (
             <Link
               key={quiz.slug}
               href={`/quiz/${quiz.slug}`}
-              className="group flex min-h-[190px] flex-col justify-between border-t border-border bg-card p-6 transition-colors hover:border-primary"
+              className="group flex min-h-[190px] flex-col justify-between border-b border-border py-6 transition-colors hover:border-primary"
             >
-              <div>
-                <p className="text-xs font-medium text-primary">Kuis edukasi</p>
-                <h2 className="mt-3 font-heading text-2xl font-medium">
-                  {quiz.title}
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {quiz.description}
-                </p>
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium">
+                    {difficultyLabels[quiz.difficulty]}
+                  </span>
+                  <h2 className="mt-4 font-heading text-2xl font-medium">
+                    {quiz.title}
+                  </h2>
+                  <p className="mt-2 max-w-[56ch] text-sm leading-6 text-muted-foreground">
+                    {quiz.description}
+                  </p>
+                </div>
+                <span className="grid size-10 shrink-0 place-items-center rounded-full border border-border text-primary transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
+                  <ArrowRight size={17} />
+                </span>
               </div>
-              <span className="mt-6 flex items-center justify-between text-sm font-bold text-primary">
-                <span>{quiz.questionCount ?? 5} pertanyaan</span>
-                <span className="grid size-9 place-items-center rounded-full bg-primary text-primary-foreground transition group-hover:translate-x-1">
-                  <ArrowRight size={16} />
+              <span className="mt-5 flex items-center gap-4 text-xs text-muted-foreground">
+                <span>{quiz.questionCount ?? 0} pertanyaan</span>
+                <span>{Math.ceil(quiz.timeLimitSeconds / 60)} menit</span>
+                <span className="inline-flex items-center gap-1 text-primary">
+                  <CheckCircle size={14} /> Sertifikat jika lulus
                 </span>
               </span>
             </Link>

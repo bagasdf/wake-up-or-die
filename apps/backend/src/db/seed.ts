@@ -86,8 +86,7 @@ const ARTICLE_SEED: SeedArticle[] = [
     readingMinutes: 8,
     seriesSlug: "dasar-anti-narkoba",
     seriesOrder: 1,
-    coverImageUrl:
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/NIDA_methamphetamine_pills.jpg",
+    coverImageUrl: "/static/images/pil.png",
     content: `## Apa itu narkoba?
 
 Narkoba adalah singkatan dari narkotika, psikotropika, dan bahan adiktif lainnya. Dalam dunia medis, beberapa zat golongan ini dipakai untuk terapi dengan pengawasan ketat. Masalah muncul ketika zat tersebut dipakai tanpa indikasi medis, dengan dosis berlebihan, atau secara berulang untuk mencari sensasi.
@@ -116,8 +115,7 @@ Jangan mencoba zat apa pun untuk "sekadar tahu". Jika kamu atau orang terdekat s
     readingMinutes: 7,
     seriesSlug: "dasar-anti-narkoba",
     seriesOrder: 2,
-    coverImageUrl:
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Teen_brain_images_(30079903896).png",
+    coverImageUrl: "/static/images/teen-brain.png",
     content: `## Otak yang sedang dibangun
 
 Hingga usia sekitar 25 tahun, otak terus membentuk koneksi baru, terutama di bagian yang mengatur perencanaan, pengendalian diri, dan penilaian risiko. Zat adiktif masuk ke sistem penghargaan otak dan membanjirinya dengan sinyal senang yang jauh lebih kuat daripada aktivitas biasa.
@@ -146,8 +144,7 @@ Jika penggunaan zat sudah mengganggu sekolah, hubungan keluarga, atau membuat se
     readingMinutes: 6,
     seriesSlug: "keterampilan-bertahan",
     seriesOrder: 1,
-    coverImageUrl:
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Retorno_drug_rehabilitation_center.jpg",
+    coverImageUrl: "/static/images/recovery-support.jpg",
     content: `## Menolak bukan berarti tidak gaul
 
 Tekanan teman sering terasa besar karena takut dikucilkan. Padahal, menolak sesuatu yang berbahaya justru menunjukkan bahwa kamu punya pendirian. Kamu tidak perlu berpidato panjang; cukup jawaban singkat yang tegas.
@@ -178,8 +175,7 @@ Rasa malu bukan alasan untuk menunda bantuan. Ceritakan pada orang dewasa yang k
     readingMinutes: 7,
     seriesSlug: "keterampilan-bertahan",
     seriesOrder: 2,
-    coverImageUrl:
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Legal_Gavel_(27571702173).jpg",
+    coverImageUrl: "/static/images/poster-1.png",
     content: `## Kerangka hukum
 
 Penyalahgunaan narkotika di Indonesia diatur terutama dalam Undang-Undang Nomor 35 Tahun 2009 tentang Narkotika. Aturan ini membedakan perbuatan memiliki, menyimpan, menguasai, menyediakan, memproduksi, dan mengedarkan narkotika, dengan ancaman pidana yang berbeda-beda.
@@ -207,8 +203,7 @@ Layanan Informasi BNN di 184 dapat memberi arahan awal. Untuk bantuan hukum, hub
     readingMinutes: 6,
     seriesSlug: "pulih-bersama",
     seriesOrder: 1,
-    coverImageUrl:
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Retorno_drug_rehabilitation_center.jpg",
+    coverImageUrl: "/static/images/recovery-support.jpg",
     content: `## Apa itu kecanduan?
 
 Kecanduan bukan sekadar kurang niat. Ini kondisi kesehatan yang membuat otak mendorong seseorang terus memakai zat meskipun sudah tahu dampaknya. Tanda utamanya adalah hilangnya kendali atas penggunaan.
@@ -239,8 +234,7 @@ Pemulihan bukan proses instan. Dukungan keluarga, konselor, dan komunitas sangat
       "Beberapa klaim yang sering beredar ternyata menyesatkan. Ini faktanya.",
     category: "umum",
     readingMinutes: 5,
-    coverImageUrl:
-      "https://commons.wikimedia.org/wiki/Special:Redirect/file/Brain_of_marijuana_user.jpg",
+    coverImageUrl: "/static/images/weed.png",
     content: `## Mitos 1: "Cuma sekali, nggak bakal kecanduan"
 
 Fakta: Tidak ada jumlah aman. Sebagian orang menjadi kecanduan setelah penggunaan pertama atau beberapa kali, tergantung jenis zat, dosis, dan kondisi tubuh. Efek buruk seperti serangan panik atau keracunan bisa terjadi sejak awal.
@@ -327,6 +321,24 @@ type SeedQuiz = {
     options: Array<{ label: string; isCorrect: boolean }>;
   }>;
 };
+
+function quizQuestion(
+  prompt: string,
+  correct: string,
+  explanation: string,
+  wrongA: string,
+  wrongB: string,
+): SeedQuiz["questions"][number] {
+  return {
+    prompt,
+    explanation,
+    options: [
+      { label: correct, isCorrect: true },
+      { label: wrongA, isCorrect: false },
+      { label: wrongB, isCorrect: false },
+    ],
+  };
+}
 
 const QUIZ_SEED: SeedQuiz[] = [
   {
@@ -449,6 +461,106 @@ const QUIZ_SEED: SeedQuiz[] = [
       },
     ],
   },
+  ...[
+    {
+      slug: "dampak-zat-pada-otak-remaja",
+      title: "Dampak Zat pada Otak Remaja",
+      description: "Kenali pengaruh zat adiktif pada fokus, memori, suasana hati, dan keputusan.",
+      difficulty: "easy",
+      prompts: [
+        ["Hingga sekitar usia berapa otak masih berkembang?", "Sekitar 25 tahun", "Bagian otak untuk perencanaan dan pengendalian diri berkembang hingga pertengahan usia dua puluhan.", "Sekitar 10 tahun", "Sekitar 40 tahun"],
+        ["Salah satu dampak zat adiktif pada proses belajar adalah...", "Gangguan fokus dan memori", "Zat adiktif dapat mengganggu fungsi kognitif yang dibutuhkan untuk belajar.", "Nilai selalu meningkat", "Tidak perlu tidur"],
+        ["Dukungan yang membantu pemulihan mencakup...", "Keluarga dan tenaga profesional", "Dukungan profesional dan lingkungan suportif membantu pemulihan.", "Mengucilkan orang tersebut", "Menghentikan semua komunikasi"],
+      ],
+    },
+    {
+      slug: "mengenali-tanda-kecanduan",
+      title: "Mengenali Tanda Kecanduan",
+      description: "Pelajari tanda kehilangan kendali dan kapan mencari bantuan profesional.",
+      difficulty: "easy",
+      prompts: [
+        ["Toleransi berarti seseorang...", "Membutuhkan dosis lebih besar untuk efek sama", "Toleransi terjadi ketika tubuh membutuhkan lebih banyak zat untuk efek yang sama.", "Selalu langsung berhenti", "Tidak pernah mengalami efek"],
+        ["Manakah tanda kehilangan kendali?", "Kembali memakai meski ingin berhenti", "Terus memakai meski ingin berhenti menunjukkan hilangnya kendali.", "Memilih kegiatan baru", "Bercerita kepada konselor"],
+        ["Perubahan perilaku yang mengkhawatirkan sebaiknya ditanggapi dengan...", "Percakapan empatik tanpa menuduh", "Tanda bukan bukti pasti; buka percakapan dan tawarkan bantuan.", "Langsung menuduh", "Menyebarkan kabar"],
+      ],
+    },
+    {
+      slug: "pertolongan-dan-pemulihan",
+      title: "Pertolongan dan Pemulihan",
+      description: "Pahami langkah aman saat keadaan darurat dan cara mendukung pemulihan.",
+      difficulty: "medium",
+      prompts: [
+        ["Jika seseorang diduga overdosis, tindakan pertama adalah...", "Hubungi 119 atau segera menuju IGD", "Overdosis adalah keadaan darurat medis yang perlu pertolongan segera.", "Membiarkannya tidur", "Memberi kopi"],
+        ["Langkah awal mencari bantuan pemulihan adalah...", "Menghubungi tenaga kesehatan atau layanan bantuan", "Asesmen profesional membantu menentukan dukungan yang sesuai.", "Menyimpan masalah sendirian", "Mengganti dengan zat lain"],
+        ["Pemulihan paling tepat dipahami sebagai...", "Proses bertahap dengan dukungan", "Pemulihan dapat melibatkan dukungan medis, keluarga, dan sosial.", "Perubahan instan tanpa dukungan", "Hanya urusan hukuman"],
+      ],
+    },
+    {
+      slug: "mitos-fakta-narkoba",
+      title: "Mitos dan Fakta Narkoba",
+      description: "Latih kemampuan memilah klaim populer dari informasi kesehatan tepercaya.",
+      difficulty: "easy",
+      prompts: [
+        ["Apakah mencoba zat sekali pasti aman?", "Tidak, risiko dapat muncul sejak awal", "Keracunan dan dampak serius dapat muncul sejak penggunaan awal.", "Ya, selalu aman", "Aman jika bersama teman"],
+        ["Sumber tepat untuk memeriksa informasi kesehatan adalah...", "Lembaga resmi dan tenaga kesehatan", "Utamakan BNN, Kementerian Kesehatan, dan tenaga kesehatan kompeten.", "Unggahan anonim", "Pesan berantai tanpa sumber"],
+        ["Kecanduan sebaiknya dipahami sebagai...", "Kondisi kesehatan yang perlu dukungan", "Kecanduan kompleks dan dapat memerlukan asesmen serta pendampingan.", "Sekadar kurang disiplin", "Masalah yang selalu selesai sendiri"],
+      ],
+    },
+    {
+      slug: "memahami-golongan-zat",
+      title: "Memahami Golongan Zat",
+      description: "Kenali perbedaan umum depresan, stimulan, dan halusinogen serta risikonya.",
+      difficulty: "medium",
+      prompts: [
+        ["Stimulan umumnya...", "Meningkatkan aktivitas sistem saraf", "Stimulan dapat meningkatkan aktivitas tubuh dan memicu gelisah atau jantung berdebar.", "Memperlambat sistem saraf", "Tidak memengaruhi tubuh"],
+        ["Depresan dapat berbahaya karena berpotensi...", "Menekan pernapasan", "Depresan dapat menekan pernapasan, terutama tanpa pengawasan medis.", "Meningkatkan kemampuan mengambil keputusan", "Mencegah semua risiko kesehatan"],
+        ["Halusinogen dapat mengubah...", "Persepsi", "Halusinogen dapat mengubah persepsi seseorang terhadap lingkungan.", "Golongan darah", "Sidik jari"],
+      ],
+    },
+    {
+      slug: "dukungan-teman-dan-keluarga",
+      title: "Dukungan untuk Teman dan Keluarga",
+      description: "Dampingi seseorang tanpa menghakimi dan tetap utamakan keselamatan.",
+      difficulty: "medium",
+      prompts: [
+        ["Pembuka percakapan yang baik saat khawatir pada teman adalah...", "Aku peduli dan siap mendengarkan", "Ungkapkan kepedulian dan dengarkan tanpa langsung menuduh.", "Kamu pasti pengguna", "Aku akan menyebarkan ini"],
+        ["Jika teman membutuhkan bantuan di luar kemampuan kita...", "Arahkan ke bantuan profesional", "Libatkan orang dewasa tepercaya atau tenaga profesional.", "Berpura-pura menjadi dokter", "Putuskan semua dukungan"],
+        ["Jika ada bahaya langsung, prioritas utama adalah...", "Jaga keselamatan dan minta bantuan darurat", "Keselamatan segera menjadi prioritas.", "Merekam untuk dibagikan", "Menunggu tanpa memberi tahu siapa pun"],
+      ],
+    },
+    {
+      slug: "hukum-dan-akses-bantuan",
+      title: "Hukum dan Akses Bantuan",
+      description: "Pahami batas informasi umum dan kapan mencari pendampingan hukum.",
+      difficulty: "hard",
+      prompts: [
+        ["Artikel edukasi hukum sebaiknya diperlakukan sebagai...", "Informasi umum, bukan nasihat hukum resmi", "Informasi umum tidak menggantikan konsultasi advokat atau lembaga bantuan hukum.", "Nasihat resmi untuk semua perkara", "Pengganti pendampingan hukum"],
+        ["Saat menghadapi perkara hukum, langkah tepat adalah...", "Cari pendampingan hukum kompeten", "Advokat atau lembaga bantuan hukum dapat memberi arahan sesuai perkara.", "Mengandalkan kabar media sosial", "Menghapus semua bukti"],
+        ["Mengapa konteks dan perbuatan penting dalam informasi hukum?", "Aturan dan konsekuensi bergantung pada fakta", "Perbuatan dan konteks berbeda dapat memiliki konsekuensi hukum berbeda.", "Semua kasus dianggap sama", "Agar tidak perlu mencari bantuan"],
+      ],
+    },
+    {
+      slug: "membangun-kebiasaan-sehat",
+      title: "Membangun Kebiasaan Sehat",
+      description: "Temukan kebiasaan dan dukungan sosial yang membantu menjaga kesehatan.",
+      difficulty: "easy",
+      prompts: [
+        ["Kebiasaan yang mendukung kesehatan tubuh adalah...", "Tidur cukup dan olahraga teratur", "Tidur dan aktivitas fisik teratur mendukung kesehatan secara umum.", "Menghindari semua teman", "Mengganti tidur dengan minuman energi"],
+        ["Saat merasa tertekan, pilihan sehat adalah...", "Bercerita pada orang tepercaya atau konselor", "Meminta dukungan membuka akses pada cara menghadapi tekanan yang aman.", "Memendam semuanya", "Menggunakan zat untuk mengatasi perasaan"],
+        ["Ketahanan diri dapat diperkuat dengan...", "Dukungan sosial dan keterampilan menghadapi tekanan", "Dukungan sosial dan batasan sehat membantu menghadapi tekanan.", "Menolak semua bantuan", "Mengambil risiko agar diterima"],
+      ],
+    },
+  ].map((item) => ({
+    slug: item.slug,
+    title: item.title,
+    description: item.description,
+    difficulty: item.difficulty as SeedQuiz["difficulty"],
+    passScore: 70,
+    timeLimitSeconds: 420,
+    questions: item.prompts.map(([prompt, correct, explanation, wrongA, wrongB]) =>
+      quizQuestion(prompt, correct, explanation, wrongA, wrongB),
+    ),
+  })),
 ];
 
 async function seedQuizzes(): Promise<void> {

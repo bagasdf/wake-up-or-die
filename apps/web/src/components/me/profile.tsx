@@ -1,9 +1,9 @@
 "use client";
 
-import { Medal, Scroll, Target } from "@phosphor-icons/react";
+import { ArrowDown, Medal, Scroll, Target } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
-import { useTranslations } from "@/lib/i18n";
 import { apiJson } from "@/lib/api";
+import { useTranslations } from "@/lib/i18n";
 
 type Me = {
   user: { name: string | null; email: string; createdAt: string };
@@ -84,10 +84,13 @@ export function Profile() {
               [Medal, t("quizzesPassed"), me.stats.quizzesPassed],
               [Medal, t("articlesRead"), me.stats.articlesRead],
               [Scroll, t("commentsApproved"), me.stats.commentsApproved],
-            ].map(([icon, label, value], i) => {
+            ].map(([icon, label, value]) => {
               const Icon = icon as typeof Target;
               return (
-                <div key={i} className="rounded-[1.25rem] border p-5">
+                <div
+                  key={String(label)}
+                  className="rounded-[1.25rem] border p-5"
+                >
                   <Icon className="size-5 text-primary" weight="duotone" />
                   <p className="mt-3 font-mono text-2xl tracking-tight">
                     {String(value)}
@@ -111,9 +114,9 @@ export function Profile() {
                 </p>
               ) : (
                 <ul className="mt-4 divide-y divide-border">
-                  {me.recentAttempts.map((attempt, i) => (
+                  {me.recentAttempts.map((attempt) => (
                     <li
-                      key={i}
+                      key={`${attempt.quizTitle}-${attempt.completedAt}`}
                       className="flex items-center justify-between py-3 text-sm"
                     >
                       <span className="truncate">{attempt.quizTitle}</span>
@@ -142,7 +145,12 @@ export function Profile() {
                       className="flex items-center justify-between py-3 text-sm"
                     >
                       <span className="truncate">{cert.title}</span>
-                      <span className="font-mono text-xs">{cert.code}</span>
+                      <a
+                        href={`/api/certificates/${cert.code}/download`}
+                        className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-medium text-primary hover:border-primary"
+                      >
+                        <ArrowDown size={15} /> Unduh SVG
+                      </a>
                     </li>
                   ))}
                 </ul>
@@ -160,8 +168,11 @@ export function Profile() {
         </>
       ) : (
         <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="animate-pulse rounded-[1.25rem] border p-5">
+          {["one", "two", "three", "four"].map((skeleton) => (
+            <div
+              key={skeleton}
+              className="animate-pulse rounded-[1.25rem] border p-5"
+            >
               <div className="size-5 rounded bg-muted" />
               <div className="mt-3 h-6 w-1/2 rounded bg-muted" />
             </div>

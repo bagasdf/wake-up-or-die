@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/articles", label: "Belajar" },
-  { href: "/quiz", label: "Kuis" },
+  { href: "/quiz", label: "Belajar" },
   { href: "/directory", label: "Bantuan" },
   { href: "/chat", label: "Konsultasi" },
 ] as const;
