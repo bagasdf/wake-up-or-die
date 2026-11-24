@@ -26,7 +26,13 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
     })
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then(() => {
-        window.location.href = "/me";
+        const returnTo = new URLSearchParams(window.location.search).get(
+          "returnTo",
+        );
+        window.location.href =
+          returnTo?.startsWith("/") && !returnTo.startsWith("//")
+            ? returnTo
+            : "/me";
       })
       .catch(() => setError(t("error")))
       .finally(() => setSending(false));

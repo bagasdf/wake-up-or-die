@@ -26,6 +26,10 @@ export function Profile() {
   const t = useTranslations("me");
   const [me, setMe] = useState<Me | null>(null);
   const [error, setError] = useState(false);
+  const [editingName, setEditingName] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [savingName, setSavingName] = useState(false);
+  const [nameMessage, setNameMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -34,6 +38,7 @@ export function Profile() {
         if (alive) {
           if (!data?.user) throw new Error("Invalid profile response");
           setMe(data);
+          setFullName(data.user.name ?? "");
         }
       })
       .catch(() => {
@@ -43,6 +48,31 @@ export function Profile() {
       alive = false;
     };
   }, []);
+
+  const saveName = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSavingName(true);
+    setNameMessage(null);
+    apiJson<{ name: string }>("/api/me", {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ name: fullName.trim() }),
+    })
+      .then((updated) => {
+        setMe((current) =>
+          current
+            ? { ...current, user: { ...current.user, name: updated.name } }
+            : current,
+        );
+        setFullName(updated.name);
+        setEditingName(false);
+        setNameMessage(
+          "Nama diperbarui. Sertifikat baru akan memakai nama ini.",
+        );
+      })
+      .catch(() => setNameMessage("Nama gagal disimpan. Coba lagi."))
+      .finally(() => setSavingName(false));
+  };
 
   return (
     <section className="mx-auto w-full max-w-[1280px] px-5 pb-20 pt-32 md:px-8 md:pt-36">
@@ -57,12 +87,72 @@ export function Profile() {
         </div>
         {me && (
           <div className="rounded-2xl border border-border p-5">
-            <p className="font-heading text-lg font-semibold">
-              {me.user.name ?? "Pengguna"}
-            </p>
-            <p className="mt-1 truncate text-sm text-muted-foreground">
-              {me.user.email}
-            </p>
+            {editingName ? (
+              <form onSubmit={saveName}>
+                <label
+                  className="block text-sm font-medium"
+                  htmlFor="full-name"
+                >
+                  Nama lengkap untuk sertifikat baru
+                </label>
+                <input
+                  id="full-name"
+                  required
+                  minLength={2}
+                  maxLength={80}
+                  value={fullName}
+                  onChange={(event) => setFullName(event.target.value)}
+                  className="mt-2 h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
+                />
+                <div className="mt-3 flex gap-2">
+                  <button
+                    type="submit"
+                    disabled={savingName}
+                    className="rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground disabled:opacity-50"
+                  >
+                    {savingName ? "Menyimpan…" : "Simpan nama"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingName(false);
+                      setFullName(me.user.name ?? "");
+                    }}
+                    className="rounded-lg border border-border px-3 py-2 text-xs font-semibold"
+                  >
+                    Batal
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <>
+                <p className="font-heading text-lg font-semibold">
+                  {me.user.name ?? "Pengguna"}
+                </p>
+                <p className="mt-1 truncate text-sm text-muted-foreground">
+                  {me.user.email}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFullName(me.user.name ?? "");
+                    setNameMessage(null);
+                    setEditingName(true);
+                  }}
+                  className="mt-3 text-xs font-semibold text-primary hover:underline"
+                >
+                  Ubah nama lengkap
+                </button>
+              </>
+            )}
+            {nameMessage ? (
+              <output
+                className="mt-2 block text-xs text-muted-foreground"
+                aria-live="polite"
+              >
+                {nameMessage}
+              </output>
+            ) : null}
           </div>
         )}
       </header>

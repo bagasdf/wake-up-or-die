@@ -172,6 +172,29 @@
   display: block;
 }
 
+.home-section-heading {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+}
+
+.home-ascii {
+  display: none;
+}
+
+.ascii-loop-track {
+  animation: ascii-loop 34s linear infinite;
+}
+
+@keyframes ascii-loop {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 .footer-desktop-links {
   display: none;
 }
@@ -181,6 +204,10 @@
 }
 
 @media (min-width: 64rem) {
+  .home-ascii {
+    display: block;
+  }
+
   .navbar-brand-name {
     display: block;
   }
@@ -196,6 +223,12 @@
 }
 
 @media (min-width: 48rem) {
+  .home-section-heading {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.72fr);
+    align-items: start;
+    column-gap: 4rem;
+  }
+
   .footer-desktop-links {
     display: grid;
   }

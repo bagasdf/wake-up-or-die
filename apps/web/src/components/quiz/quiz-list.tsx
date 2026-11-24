@@ -18,6 +18,9 @@ type Quiz = {
   difficulty: "easy" | "medium" | "hard";
   timeLimitSeconds: number;
   questionCount?: number;
+  attempted?: boolean;
+  completed?: boolean;
+  hasCertificate?: boolean;
 };
 
 const difficultyLabels = {
@@ -26,11 +29,49 @@ const difficultyLabels = {
   hard: "Lanjutan",
 } as const;
 
+const learningCenters = [
+  {
+    id: "prevention",
+    title: "Pencegahan",
+    description: "Kenali risiko dan latih cara mengambil keputusan aman.",
+    slugs: [
+      "mengenal-bahaya-narkoba",
+      "keterampilan-menolak-tawaran",
+      "mitos-fakta-narkoba",
+      "memahami-golongan-zat",
+      "membangun-kebiasaan-sehat",
+    ],
+  },
+  {
+    id: "impact",
+    title: "Dampak dan risiko",
+    description: "Pahami efek zat, tanda kecanduan, dan kapan perlu bantuan.",
+    slugs: [
+      "dampak-zat-pada-otak-remaja",
+      "mengenali-tanda-kecanduan",
+      "memahami-golongan-zat",
+      "mitos-fakta-narkoba",
+    ],
+  },
+  {
+    id: "support",
+    title: "Dukungan dan pemulihan",
+    description: "Belajar mendampingi teman dan menemukan pertolongan tepat.",
+    slugs: [
+      "pertolongan-dan-pemulihan",
+      "dukungan-teman-dan-keluarga",
+      "hukum-dan-akses-bantuan",
+      "mengenali-tanda-kecanduan",
+    ],
+  },
+] as const;
+
 export function QuizList() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [difficulty, setDifficulty] = useState<string>("all");
+  const [activeCenter, setActiveCenter] = useState<string>("all");
   useEffect(() => {
     apiJson<Quiz[]>("/api/quizzes")
       .then((d) => setQuizzes(Array.isArray(d) ? d : []))
@@ -42,8 +83,17 @@ export function QuizList() {
     const matchesQuery = `${quiz.title} ${quiz.description}`
       .toLocaleLowerCase("id")
       .includes(query.toLocaleLowerCase("id"));
+    const matchesCenter =
+      activeCenter === "all" ||
+      learningCenters.some(
+        (center) =>
+          center.id === activeCenter &&
+          center.slugs.some((slug) => slug === quiz.slug),
+      );
     return (
-      matchesQuery && (difficulty === "all" || quiz.difficulty === difficulty)
+      matchesQuery &&
+      matchesCenter &&
+      (difficulty === "all" || quiz.difficulty === difficulty)
     );
   });
 
@@ -77,6 +127,57 @@ export function QuizList() {
           </Link>
         </div>
       </header>
+
+      <section className="mt-8" aria-labelledby="learning-centers-title">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2
+              id="learning-centers-title"
+              className="font-heading text-2xl font-semibold"
+            >
+              Pilih pusat belajar
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Tiga jalur, sepuluh kuis. Setiap kuis berisi sedikitnya 10
+              pertanyaan.
+            </p>
+          </div>
+          <button
+            type="button"
+            aria-pressed={activeCenter === "all"}
+            onClick={() => setActiveCenter("all")}
+            className={`rounded-full border px-4 py-2 text-sm ${activeCenter === "all" ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-primary"}`}
+          >
+            Semua jalur
+          </button>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {learningCenters.map((center) => (
+            <button
+              key={center.id}
+              type="button"
+              aria-pressed={activeCenter === center.id}
+              onClick={() => setActiveCenter(center.id)}
+              className={`min-h-36 border-t-2 p-4 text-left transition-colors ${activeCenter === center.id ? "border-primary bg-primary/5" : "border-border hover:border-primary"}`}
+            >
+              <span className="font-heading text-xl font-semibold">
+                {center.title}
+              </span>
+              <span className="mt-2 block text-sm leading-6 text-muted-foreground">
+                {center.description}
+              </span>
+              <span className="mt-3 block text-xs font-semibold text-primary">
+                {
+                  quizzes.filter((quiz) =>
+                    center.slugs.some((slug) => slug === quiz.slug),
+                  ).length
+                }{" "}
+                modul
+              </span>
+            </button>
+          ))}
+        </div>
+      </section>
 
       <div className="mt-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <label className="flex h-12 items-center gap-3 rounded-xl border border-input px-4 md:w-[min(100%,360px)]">
@@ -136,9 +237,22 @@ export function QuizList() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium">
-                    {difficultyLabels[quiz.difficulty]}
-                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium">
+                      {difficultyLabels[quiz.difficulty]}
+                    </span>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${quiz.completed ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}
+                    >
+                      {quiz.hasCertificate
+                        ? "Sertifikat tersedia"
+                        : quiz.completed
+                          ? "Sudah selesai"
+                          : quiz.attempted
+                            ? "Sudah dicoba"
+                            : "Belum selesai"}
+                    </span>
+                  </div>
                   <h2 className="mt-4 font-heading text-2xl font-medium">
                     {quiz.title}
                   </h2>

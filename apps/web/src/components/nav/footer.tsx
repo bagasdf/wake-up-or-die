@@ -7,7 +7,7 @@ const columns = [
   {
     title: "Jelajahi",
     links: [
-      ["Belajar", "/articles"],
+      ["Article", "/articles"],
       ["Belajar", "/quiz"],
       ["Galeri", "/gallery"],
     ],

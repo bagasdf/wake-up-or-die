@@ -16,6 +16,12 @@ type ReviewItem = {
   correct: boolean;
   explanation: string | null;
 };
+type QuizResult = {
+  score: number;
+  passed: boolean;
+  review: ReviewItem[];
+  certificate: { code: string } | null;
+};
 
 export function QuizPlayer({ slug }: { slug: string }) {
   const t = useTranslations("quiz");
@@ -29,6 +35,7 @@ export function QuizPlayer({ slug }: { slug: string }) {
   const [review, setReview] = useState<ReviewItem[]>([]);
   const [score, setScore] = useState(0);
   const [passed, setPassed] = useState(false);
+  const [certificateIssued, setCertificateIssued] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -56,7 +63,7 @@ export function QuizPlayer({ slug }: { slug: string }) {
       return;
     }
     setPhase("sending");
-    apiJson<{ score: number; passed: boolean; review: ReviewItem[] }>(`/api/quizzes/${slug}/attempts`, {
+    apiJson<QuizResult>(`/api/quizzes/${slug}/attempts`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -66,14 +73,13 @@ export function QuizPlayer({ slug }: { slug: string }) {
         })),
       }),
     })
-      .then(
-        (data) => {
-          setScore(data.score);
-          setPassed(data.passed);
-          setReview(data.review);
-          setPhase("done");
-        },
-      )
+      .then((data) => {
+        setScore(data.score);
+        setPassed(data.passed);
+        setCertificateIssued(Boolean(data.certificate));
+        setReview(data.review);
+        setPhase("done");
+      })
       .catch(() => setPhase("error"));
   };
 
@@ -112,6 +118,36 @@ export function QuizPlayer({ slug }: { slug: string }) {
             total: review.length,
           })}
         </p>
+        {passed ? (
+          certificateIssued ? (
+            <div className="mt-6 rounded-xl border border-primary/30 bg-primary/5 p-5">
+              <p className="font-semibold">Sertifikatmu sudah terbit.</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Buka dasbor untuk melihat dan mengunduh sertifikat.
+              </p>
+              <Link
+                href="/me"
+                className="mt-4 inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground"
+              >
+                Buka dasbor
+              </Link>
+            </div>
+          ) : (
+            <div className="mt-6 rounded-xl border border-border p-5">
+              <p className="font-semibold">Masuk untuk menerima sertifikat.</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Setelah masuk, ulangi kuis ini agar sertifikat tersimpan di
+                dasbormu.
+              </p>
+              <Link
+                href="/login?returnTo=/me"
+                className="mt-4 inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground"
+              >
+                Masuk dan buka dasbor
+              </Link>
+            </div>
+          )
+        ) : null}
         <ul className="mt-8 divide-y divide-border">
           {review.map((item) => (
             <li key={item.questionId} className="py-4">

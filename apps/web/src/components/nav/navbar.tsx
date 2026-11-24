@@ -17,7 +17,7 @@ import { apiJson } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/articles", label: "Belajar" },
+  { href: "/articles", label: "Article" },
   { href: "/quiz", label: "Belajar" },
   { href: "/directory", label: "Bantuan" },
   { href: "/chat", label: "Konsultasi" },

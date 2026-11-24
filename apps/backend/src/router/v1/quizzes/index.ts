@@ -42,6 +42,7 @@ const router = createHono()
     }),
     async (c) => {
       const db = c.get("db");
+      const user = c.get("user");
       const difficulty = c.req.query("difficulty");
 
       const filters = [eq(quizzes.status, "published")];
@@ -77,10 +78,45 @@ const router = createHono()
         : [];
 
       const countMap = new Map(counts.map((row) => [row.quizId, row.total]));
+      const [attempts, earnedCertificates] = user && rows.length
+        ? await Promise.all([
+            db
+              .select({ quizId: quizAttempts.quizId, passed: quizAttempts.passed })
+              .from(quizAttempts)
+              .where(
+                and(
+                  eq(quizAttempts.userId, user.id),
+                  inArray(quizAttempts.quizId, rows.map((row) => row.id)),
+                ),
+              )
+              .orderBy(desc(quizAttempts.completedAt)),
+            db
+              .select({ refId: certificates.refId })
+              .from(certificates)
+              .where(
+                and(
+                  eq(certificates.userId, user.id),
+                  eq(certificates.type, "quiz"),
+                  inArray(certificates.refId, rows.map((row) => row.id)),
+                ),
+              ),
+          ])
+        : [[], []];
+      const attemptedIds = new Set(attempts.map((attempt) => attempt.quizId));
+      const passedIds = new Set(
+        attempts.filter((attempt) => attempt.passed).map((attempt) => attempt.quizId),
+      );
+      const certificateIds = new Set(earnedCertificates.map((certificate) => certificate.refId));
 
       return ok(
         c,
-        rows.map((row) => ({ ...row, questionCount: countMap.get(row.id) ?? 0 })),
+        rows.map((row) => ({
+          ...row,
+          questionCount: countMap.get(row.id) ?? 0,
+          attempted: attemptedIds.has(row.id),
+          completed: passedIds.has(row.id),
+          hasCertificate: certificateIds.has(row.id),
+        })),
       );
     },
   )
