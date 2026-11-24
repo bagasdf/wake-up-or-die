@@ -39,11 +39,17 @@ export function createAuth(env: Bindings) {
       // Neon's HTTP driver has no interactive transactions.
       transaction: false,
     }),
+    socialProviders:
+      env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
+        ? {
+            google: {
+              clientId: env.GOOGLE_CLIENT_ID,
+              clientSecret: env.GOOGLE_CLIENT_SECRET,
+            },
+          }
+        : {},
     emailAndPassword: {
-      enabled: true,
-      minPasswordLength: 8,
-      maxPasswordLength: 128,
-      autoSignIn: true,
+      enabled: false,
     },
     session: {
       expiresIn: SEVEN_DAYS,

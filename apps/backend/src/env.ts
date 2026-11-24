@@ -23,6 +23,8 @@ export type Bindings = {
   DATABASE_URL: string;
   BETTER_AUTH_SECRET: string;
   BETTER_AUTH_URL?: string;
+  GOOGLE_CLIENT_ID?: string;
+  GOOGLE_CLIENT_SECRET?: string;
   SERVER_API_URL?: string;
   WEB_ORIGIN?: string;
   APP_NAME?: string;

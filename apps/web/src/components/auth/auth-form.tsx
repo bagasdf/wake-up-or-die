@@ -6,40 +6,54 @@ import { useTranslations } from "@/lib/i18n";
 
 export function AuthForm({ mode }: { mode: "login" | "register" }) {
   const t = useTranslations("auth");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const submit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const signInWithGoogle = async () => {
     setSending(true);
     setError(null);
-    const path = mode === "login" ? "sign-in/email" : "sign-up/email";
-    const body: Record<string, string> = { email, password };
-    if (mode === "register") body.name = name;
-    fetch(`/api/auth/${path}`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(body),
-    })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then(() => {
-        const returnTo = new URLSearchParams(window.location.search).get(
-          "returnTo",
-        );
-        window.location.href =
-          returnTo?.startsWith("/") && !returnTo.startsWith("//")
-            ? returnTo
-            : "/me";
-      })
-      .catch(() => setError(t("error")))
-      .finally(() => setSending(false));
-  };
+    const requestedReturnTo = new URLSearchParams(window.location.search).get(
+      "returnTo",
+    );
+    const origin = window.location.origin;
+    let callbackURL = new URL("/me", origin);
+    if (requestedReturnTo) {
+      try {
+        const candidate = new URL(requestedReturnTo, origin);
+        if (candidate.origin === origin) callbackURL = candidate;
+      } catch {
+        // Keep the safe dashboard callback for malformed return paths.
+      }
+    }
 
-  const inputClass =
-    "mt-2 h-12 w-full rounded-xl border border-input bg-background px-4 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50";
+    try {
+      const response = await fetch("/api/auth/sign-in/social", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          provider: "google",
+          callbackURL: callbackURL.toString(),
+          errorCallbackURL: new URL("/login?error=google", origin).toString(),
+          disableRedirect: true,
+        }),
+      });
+      const result = (await response.json().catch(() => null)) as {
+        url?: string;
+      } | null;
+
+      if (!response.ok || !result?.url) {
+        throw new Error("Google sign-in unavailable");
+      }
+
+      window.location.assign(result.url);
+    } catch {
+      setError(
+        "Google Sign-In belum tersedia. Pastikan GOOGLE_CLIENT_ID dan GOOGLE_CLIENT_SECRET sudah dikonfigurasi.",
+      );
+      setSending(false);
+    }
+  };
 
   return (
     <section className="auth-layout mx-auto grid min-h-[720px] w-full max-w-[1280px] items-center px-5 pb-20 pt-32 md:px-8 md:pt-36">
@@ -63,67 +77,45 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         <h1 className="mt-3 font-heading text-4xl font-semibold tracking-tight">
           {mode === "login" ? t("loginTitle") : t("registerTitle")}
         </h1>
-        <form onSubmit={submit} className="mt-7 space-y-4">
-          {mode === "register" ? (
-            <label className="block">
-              <span className="text-sm font-medium">{t("name")}</span>
-              <input
-                required
-                minLength={2}
-                maxLength={80}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className={inputClass}
-              />
-            </label>
-          ) : null}
-          <label className="block">
-            <span className="text-sm font-medium">{t("email")}</span>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={inputClass}
-            />
-          </label>
-          <label className="block">
-            <span className="text-sm font-medium">{t("password")}</span>
-            <input
-              type="password"
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={inputClass}
-            />
-          </label>
+        <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          {mode === "login"
+            ? "Masuk dengan Google. Akun baru dibuat otomatis saat pertama kali masuk."
+            : "Gunakan akun Google untuk membuat akun Wake Up or Die."}
+        </p>
+        <div className="mt-7">
           <button
-            type="submit"
+            type="button"
+            onClick={signInWithGoogle}
             disabled={sending}
-            className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px disabled:opacity-50"
+            className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-px disabled:opacity-50"
           >
-            {mode === "login" ? t("submitLogin") : t("submitRegister")}
+            <span
+              aria-hidden="true"
+              className="grid size-6 place-items-center rounded-full bg-white font-bold text-[#4285f4]"
+            >
+              G
+            </span>
+            {sending ? "Menghubungkan ke Google…" : "Lanjutkan dengan Google"}
           </button>
           {error ? (
-            <p className="text-sm text-destructive" role="alert">
+            <p className="mt-3 text-sm text-destructive" role="alert">
               {error}
             </p>
           ) : null}
-        </form>
+        </div>
         <p className="mt-6 text-sm text-muted-foreground">
           {mode === "login" ? (
             <>
               {t("switchToRegister")}{" "}
               <Link href="/register" className="text-primary underline">
-                {t("registerTitle")}
+                Buat akun
               </Link>
             </>
           ) : (
             <>
               {t("switchToLogin")}{" "}
               <Link href="/login" className="text-primary underline">
-                {t("loginTitle")}
+                Masuk dengan Google
               </Link>
             </>
           )}
