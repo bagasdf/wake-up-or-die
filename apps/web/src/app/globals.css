@@ -155,3 +155,34 @@
     scroll-behavior: auto;
   }
 }
+
+.navbar-desktop-links {
+  display: none;
+}
+
+.navbar-brand-name {
+  display: none;
+}
+
+.navbar-menu-toggle {
+  display: grid;
+}
+
+.navbar-mobile-menu {
+  display: block;
+}
+
+@media (min-width: 64rem) {
+  .navbar-brand-name {
+    display: block;
+  }
+
+  .navbar-desktop-links {
+    display: flex;
+  }
+
+  .navbar-menu-toggle,
+  .navbar-mobile-menu {
+    display: none;
+  }
+}

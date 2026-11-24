@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Shield, X } from "@phosphor-icons/react";
+import { createMarkdownRenderer } from "fumadocs-core/content/md";
 import { useCallback, useEffect, useState } from "react";
 import { apiJson } from "@/lib/api";
 import { useTranslations } from "@/lib/i18n";
@@ -9,6 +10,8 @@ type Article = {
   id: string;
   title: string;
   slug: string;
+  excerpt: string;
+  content: string;
   status: string;
   category: string;
 };
@@ -21,6 +24,8 @@ type Comment = {
   createdAt: string;
 };
 
+const { Markdown } = createMarkdownRenderer();
+
 export function AdminPanel() {
   const t = useTranslations("admin");
   const [tab, setTab] = useState<"articles" | "comments">("comments");
@@ -29,6 +34,8 @@ export function AdminPanel() {
   const [comments, setComments] = useState<Comment[] | null>(null);
   const [error, setError] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [preview, setPreview] = useState(false);
   const [draft, setDraft] = useState({
     title: "",
     excerpt: "",
@@ -84,14 +91,27 @@ export function AdminPanel() {
     if (creating) return;
     setCreating(true);
     setFormError(null);
-    apiJson<Article>("/api/admin/articles", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(draft),
-    })
-      .then((created) => {
-        setArticles((prev) => (prev ? [created, ...prev] : prev));
+    apiJson<Article>(
+      editingId ? `/api/admin/articles/${editingId}` : "/api/admin/articles",
+      {
+        method: editingId ? "PATCH" : "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(draft),
+      },
+    )
+      .then((saved) => {
+        setArticles((prev) =>
+          prev
+            ? editingId
+              ? prev.map((article) =>
+                  article.id === editingId ? { ...article, ...saved } : article,
+                )
+              : [saved, ...prev]
+            : prev,
+        );
         setShowForm(false);
+        setEditingId(null);
+        setPreview(false);
         setDraft({
           title: "",
           excerpt: "",
@@ -102,6 +122,38 @@ export function AdminPanel() {
       })
       .catch(() => setFormError(t("formError")))
       .finally(() => setCreating(false));
+  };
+
+  const editArticle = (article: Article) => {
+    setFormError(null);
+    apiJson<Article>(`/api/admin/articles/${article.id}`)
+      .then((details) => {
+        setDraft({
+          title: details.title,
+          excerpt: details.excerpt,
+          content: details.content,
+          category: details.category,
+          status: details.status,
+        });
+        setEditingId(details.id);
+        setPreview(false);
+        setShowForm(true);
+      })
+      .catch(() => setFormError(t("formError")));
+  };
+
+  const closeForm = () => {
+    setShowForm(false);
+    setEditingId(null);
+    setPreview(false);
+    setFormError(null);
+    setDraft({
+      title: "",
+      excerpt: "",
+      content: "",
+      category: "umum",
+      status: "draft",
+    });
   };
 
   if (role === null && !error) {
@@ -170,10 +222,10 @@ export function AdminPanel() {
           />
           <button
             type="button"
-            onClick={() => setShowForm((v) => !v)}
+            onClick={() => (showForm ? closeForm() : setShowForm(true))}
             className="inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px"
           >
-            {t("newArticle")}
+            {showForm ? "Tutup editor" : t("newArticle")}
           </button>
           {showForm ? (
             <form
@@ -215,8 +267,8 @@ export function AdminPanel() {
                 <span className="text-sm font-medium">{t("excerpt")}</span>
                 <input
                   required
-                  minLength={3}
-                  maxLength={300}
+                  minLength={10}
+                  maxLength={500}
                   value={draft.excerpt}
                   onChange={(e) =>
                     setDraft((d) => ({ ...d, excerpt: e.target.value }))
@@ -226,15 +278,55 @@ export function AdminPanel() {
               </label>
               <label className="block md:col-span-2">
                 <span className="text-sm font-medium">{t("content")}</span>
-                <textarea
-                  required
-                  minLength={10}
-                  value={draft.content}
-                  onChange={(e) =>
-                    setDraft((d) => ({ ...d, content: e.target.value }))
-                  }
-                  className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
-                />
+                <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs text-muted-foreground">
+                    Markdown: **tebal**, *miring*, # judul, - daftar, &gt;
+                    kutipan, `kode`
+                  </p>
+                  <div className="inline-flex rounded-lg border border-border p-1">
+                    <button
+                      type="button"
+                      onClick={() => setPreview(false)}
+                      aria-pressed={!preview}
+                      className={`rounded-md px-3 py-1 text-xs ${!preview ? "bg-muted font-semibold" : "text-muted-foreground"}`}
+                    >
+                      Tulis
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPreview(true)}
+                      aria-pressed={preview}
+                      className={`rounded-md px-3 py-1 text-xs ${preview ? "bg-muted font-semibold" : "text-muted-foreground"}`}
+                    >
+                      Pratinjau
+                    </button>
+                  </div>
+                </div>
+                {preview ? (
+                  <div className="prose mt-2 min-h-64 rounded-lg border border-input bg-background px-4 py-3 text-sm">
+                    {draft.content.trim() ? (
+                      <Markdown>{draft.content}</Markdown>
+                    ) : (
+                      <p className="text-muted-foreground">
+                        Pratinjau artikel akan muncul di sini.
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <textarea
+                    required
+                    minLength={20}
+                    rows={18}
+                    value={draft.content}
+                    onChange={(e) =>
+                      setDraft((d) => ({ ...d, content: e.target.value }))
+                    }
+                    placeholder={
+                      "# Judul bagian\n\nTulis isi artikel di sini. Gunakan Markdown untuk menyusun konten."
+                    }
+                    className="mt-2 min-h-64 w-full resize-y rounded-lg border border-input bg-background px-3 py-2 font-mono text-sm leading-6 outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
+                  />
+                )}
               </label>
               <label className="block">
                 <span className="text-sm font-medium">{t("status")}</span>
@@ -255,7 +347,18 @@ export function AdminPanel() {
                   disabled={creating}
                   className="inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-px disabled:opacity-50"
                 >
-                  {t("create")}
+                  {creating
+                    ? "Menyimpan…"
+                    : editingId
+                      ? "Simpan perubahan"
+                      : t("create")}
+                </button>
+                <button
+                  type="button"
+                  onClick={closeForm}
+                  className="inline-flex h-11 items-center rounded-lg border border-border px-4 text-sm font-medium hover:bg-muted"
+                >
+                  Batal
                 </button>
               </div>
               {formError ? (
@@ -284,12 +387,21 @@ export function AdminPanel() {
                 .map((article) => (
                   <li
                     key={article.id}
-                    className="flex items-center justify-between py-3 text-sm"
+                    className="flex items-center justify-between gap-3 py-3 text-sm"
                   >
                     <span className="truncate">{article.title}</span>
-                    <span className="ml-4 shrink-0 font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
-                      {t(`status.${article.status}`)} · {article.category}
-                    </span>
+                    <div className="flex shrink-0 items-center gap-3">
+                      <span className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
+                        {t(`status.${article.status}`)} · {article.category}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => editArticle(article)}
+                        className="rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted"
+                      >
+                        Edit
+                      </button>
+                    </div>
                   </li>
                 ))}
             </ul>
@@ -297,9 +409,9 @@ export function AdminPanel() {
         </div>
       ) : comments === null ? (
         <div className="mt-8 space-y-3">
-          {Array.from({ length: 3 }).map((_, i) => (
+          {["first", "second", "third"].map((skeleton) => (
             <div
-              key={`skeleton-${i}`}
+              key={skeleton}
               className="animate-pulse h-20 rounded-[1.25rem] border"
             />
           ))}

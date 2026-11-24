@@ -91,12 +91,12 @@ export function Navbar() {
               className="size-7 w-auto"
             />
           </span>
-          <span className="hidden font-heading text-[15px] font-bold tracking-tight sm:block">
+          <span className="navbar-brand-name font-heading text-[15px] font-bold tracking-tight">
             Wake Up or Die
           </span>
         </Link>
 
-        <div className="absolute left-1/2 z-10 hidden -translate-x-1/2 items-center gap-1 md:flex">
+        <div className="navbar-desktop-links absolute left-1/2 z-10 -translate-x-1/2 items-center gap-1">
           {navItems.map((item) => {
             const active = item.href === pathname;
             return (
@@ -199,7 +199,7 @@ export function Navbar() {
             onClick={() => setOpen((value) => !value)}
             aria-label="Buka menu"
             aria-expanded={open}
-            className="hidden size-9 place-items-center rounded-lg border border-current/15 md:hidden"
+            className="navbar-menu-toggle size-9 place-items-center rounded-lg border border-current/15"
           >
             <List size={20} />
           </button>
@@ -207,7 +207,7 @@ export function Navbar() {
       </nav>
 
       {open && (
-        <div className="mx-auto mt-2 max-w-[1280px] rounded-2xl border border-border bg-background p-2 text-foreground shadow-2xl md:hidden">
+        <div className="navbar-mobile-menu mx-auto mt-2 max-w-[1280px] rounded-2xl border border-border bg-background p-2 text-foreground shadow-2xl">
           {navItems.map((item) => (
             <Link
               key={`${item.href}-${item.label}`}
