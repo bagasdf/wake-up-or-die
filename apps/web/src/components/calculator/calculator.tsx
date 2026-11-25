@@ -53,7 +53,9 @@ export function Calculator() {
         age: age ? Number(age) : undefined,
       }),
     })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((res) =>
+        res.ok ? (res.json() as Promise<{ result: Result }>) : Promise.reject(),
+      )
       .then((data: { result: Result }) => setResult(data.result))
       .catch(() => setError(true))
       .finally(() => setSending(false));

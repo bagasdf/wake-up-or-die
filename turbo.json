@@ -5,8 +5,15 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "env": ["API_BASE_URL"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
+      "outputs": [
+        ".cloudflare/**",
+        "!.cloudflare/cache/**",
+        ".next/**",
+        "!.next/cache/**",
+        "!.next/dev/**"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]

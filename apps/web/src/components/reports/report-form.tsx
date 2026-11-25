@@ -30,7 +30,11 @@ export function ReportForm() {
         contactValue: contactValue.trim() || undefined,
       }),
     })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((res) =>
+        res.ok
+          ? (res.json() as Promise<{ ticketCode: string }>)
+          : Promise.reject(),
+      )
       .then((data: { ticketCode: string }) => setTicket(data.ticketCode))
       .catch(() => setError(true))
       .finally(() => setSending(false));

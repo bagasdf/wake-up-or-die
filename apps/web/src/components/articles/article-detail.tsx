@@ -55,7 +55,11 @@ export function ArticleDetail({ slug }: { slug: string }) {
         setArticle(data);
         setState("ready");
         return fetch(`/api/articles/${slug}/comments?perPage=20`)
-          .then((res) => (res.ok ? res.json() : { items: [] }))
+          .then((res) =>
+            res.ok
+              ? (res.json() as Promise<{ items: Comment[] }>)
+              : { items: [] },
+          )
           .then(
             (c: { items: Comment[] }) => alive && setComments(c.items ?? []),
           )
@@ -81,7 +85,9 @@ export function ArticleDetail({ slug }: { slug: string }) {
         content: content.trim(),
       }),
     })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((res) =>
+        res.ok ? (res.json() as Promise<Comment>) : Promise.reject(),
+      )
       .then((comment: Comment) => {
         setComments((prev) => [comment, ...prev]);
         setContent("");
