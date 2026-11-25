@@ -10,6 +10,9 @@ export default defineConfig({
       notFoundHandling: "none",
       runWorkerFirst: ["/*", "!/_next/static/*", "!/*/_next/static/*"],
     },
+    vars: {
+      API_BASE_URL: "https://wuod-api.hexagonn.my.id",
+    },
     env: {
       ASSETS: bindings.assets(),
     },
