@@ -1,30 +1,31 @@
-# Web Worker
+# Wake Up or Die
 
-Next.js 16 app served on Cloudflare Workers through vinext.
+## Web app
+
+Next.js 16 app served on Cloudflare Workers through vinext. The web Worker calls the separate backend Worker for API and chat requests.
 
 ## Local development
 
+Set `API_BASE_URL` to the local backend URL:
+
 ```sh
+API_BASE_URL=http://localhost:8787
+```
+
+Start both apps from the repository root with `bun dev`, or run the web app alone:
+
+```sh
+cd apps/web
 bun run dev
 ```
 
-The web Worker runs at `http://localhost:3000`. Start the backend Worker separately from `apps/backend`.
+The web app runs at `http://localhost:3000`.
 
-## Build and preview
-
-Set `API_BASE_URL` to the backend API origin. The web app proxies `/api/*` and `/api/auth/*` to this origin.
+## Build and deploy
 
 ```sh
 bun run build
-bun run start
-```
-
-## Deploy
-
-Deploy the backend Worker first. Then set `API_BASE_URL` to its public URL and deploy this Worker:
-
-```sh
 bun run deploy:vinext
 ```
 
-Configure production secrets and `WEB_ORIGIN` on the backend Worker. Configure Google OAuth redirect URI to match the Better Auth callback URL. Keep secrets out of this app and the repository.
+Deploy the backend first. Set `API_BASE_URL` to the deployed API URL in the Cloudflare Workers build environment before building the web Worker. This is a build-time variable; do not add it under Worker `vars` in `cloudflare.config.ts`.

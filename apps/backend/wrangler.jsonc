@@ -17,7 +17,6 @@
     "APP_NAME": "Website Edukasi Anti Narkoba",
     "BETTER_AUTH_URL": "https://wuod-api.hexagonn.my.id/api/auth",
     "CHAT_API_ORIGIN": "https://wuod-api.hexagonn.my.id",
-    "DATABASE_URL": "postgresql://neondb_owner:npg_ZYctjAl1g3SW@ep-icy-thunder-a1viuf2o-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
     "OPENAI_COMPATIBLE_BASE_URL": "https://openrouter.ai/api/v1",
     "OPENAI_COMPATIBLE_MODEL": "nvidia/nemotron-3-ultra-550b-a55b:free",
     "SEED_ADMIN_EMAIL": "admin@wuod.local",
