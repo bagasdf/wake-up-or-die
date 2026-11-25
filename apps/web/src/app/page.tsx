@@ -141,9 +141,9 @@ export default function Page(): React.ReactElement {
               Edukasi anti narkoba
             </p>
             <h1 className="font-heading text-[clamp(3.5rem,9vw,7.8rem)] leading-[0.9] font-medium tracking-[-0.04em]">
-              Sadar dulu.
+              Sadar
               <br />
-              <span className="text-[#f06b53]">Sehat terus.</span>
+              <span className="text-[#f06b53]">atau mati.</span>
             </h1>
             <p className="mt-7 max-w-[610px] text-base leading-7 text-white/78 md:text-xl md:leading-8">
               Kenali risiko narkoba, uji pengetahuanmu, dan temukan bantuan
@@ -196,11 +196,7 @@ export default function Page(): React.ReactElement {
               key={feature.href}
               href={
                 feature.href as
-                  | "/articles"
-                  | "/quiz"
-                  | "/calculator"
-                  | "/chat"
-                  | "/directory"
+                  "/articles" | "/quiz" | "/calculator" | "/chat" | "/directory"
               }
               className="group min-h-[230px] border-t border-border p-5 transition-colors hover:border-primary"
             >

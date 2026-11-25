@@ -15,8 +15,15 @@
   },
   "vars": {
     "APP_NAME": "Website Edukasi Anti Narkoba",
-    "WEB_ORIGIN": "http://localhost:3000",
-    "OPENAI_COMPATIBLE_MODEL": "google/gemma-4-31b-it:free",
+    "BETTER_AUTH_URL": "https://wuod-api.hexagonn.my.id/api/auth",
+    "CHAT_API_ORIGIN": "https://wuod-api.hexagonn.my.id",
+    "DATABASE_URL": "postgresql://neondb_owner:npg_ZYctjAl1g3SW@ep-icy-thunder-a1viuf2o-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+    "OPENAI_COMPATIBLE_BASE_URL": "https://openrouter.ai/api/v1",
+    "OPENAI_COMPATIBLE_MODEL": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "SEED_ADMIN_EMAIL": "admin@wuod.local",
+    "SEED_ADMIN_NAME": "Administrator WUOD",
+    "SERVER_API_URL": "/api",
+    "WEB_ORIGIN": "http://wuod.hexaa.sh",
   },
   "r2_buckets": [
     {
