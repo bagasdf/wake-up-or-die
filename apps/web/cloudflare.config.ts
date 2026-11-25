@@ -4,7 +4,7 @@ export default defineConfig({
   worker: defineWorker({
     name: "wuod-web",
     entrypoint: "vinext/server/fetch-handler",
-    compatibilityDate: "2026-11-26",
+    compatibilityDate: "2026-09-15",
     assets: {
       htmlHandling: "none",
       notFoundHandling: "none",
