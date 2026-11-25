@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { openAPIRouteHandler } from "hono-openapi";
 
+import { createRuntimeEnv } from "@/env";
 import { createAuth } from "@/lib/auth";
 import { createHono } from "@/router/app";
 import { router } from "@/router/routes";
@@ -11,6 +12,11 @@ const ALLOWED_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"];
 const ALLOWED_HEADERS = ["Content-Type", "Authorization", "x-session-key"];
 
 const api = createHono({ strict: false }).basePath("/api");
+
+api.use("*", async (c, next) => {
+  createRuntimeEnv(c.env);
+  await next();
+});
 
 api.use(
   "*",

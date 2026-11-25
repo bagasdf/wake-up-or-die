@@ -37,8 +37,9 @@ Isi `.dev.vars`:
 | `BETTER_AUTH_SECRET` | ya | Minimal 32 karakter acak. `openssl rand -base64 32`. |
 | `BETTER_AUTH_URL` | ya | `http://localhost:8787/api/auth` saat lokal. |
 | `WEB_ORIGIN` | tidak | Origin frontend yang boleh kirim cookie. Default `http://localhost:3000`. |
-| `OPENROUTER_API_KEY` | tidak | Tanpa ini chatbot membalas jawaban fallback berisi kontak bantuan. |
-| `OPENROUTER_MODEL` | tidak | Default `google/gemma-4-31b-it:free`. |
+| `OPENAI_COMPATIBLE_API_KEY` | tidak | API key gateway; tanpa ini chatbot membalas jawaban fallback berisi kontak bantuan. |
+| `OPENAI_COMPATIBLE_MODEL` | tidak | Model gateway. Default `google/gemma-4-31b-it:free`. |
+| `OPENAI_COMPATIBLE_BASE_URL` | tidak | Base URL OpenAI-compatible; default `https://openrouter.ai/api/v1`. Tambahkan `/v1` bila gateway memerlukannya; endpoint `/chat/completions` ditambahkan otomatis. |
 | `SERVER_API_URL` | tidak | URL server OpenAPI saat produksi. Default `/api`. |
 
 Buat bucket R2 (sekali saja):
@@ -187,7 +188,7 @@ IP tidak disimpan mentah; hanya hash SHA-256 ber-salt.
    ```sh
    bunx wrangler secret put DATABASE_URL
    bunx wrangler secret put BETTER_AUTH_SECRET
-   bunx wrangler secret put OPENROUTER_API_KEY
+   bunx wrangler secret put OPENAI_COMPATIBLE_API_KEY
    ```
 
 2. Sesuaikan `vars` di `wrangler.jsonc` (`WEB_ORIGIN`, `SERVER_API_URL`,

@@ -200,6 +200,8 @@
     "send": "Send",
     "empty": "No messages yet.",
     "error": "Failed to send message.",
+    "thinking": "Thinking…",
+    "searching": "Searching for information…",
     "welcome": "Hi, I'm the education assistant. Tell me what you're experiencing.",
     "disclaimer": "AI answers are not a substitute for medical advice."
   },

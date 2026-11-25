@@ -1,26 +1,30 @@
 # Copy to `.dev.vars` and fill in. Never commit `.dev.vars`.
-# Neon Postgres connection string (pooled, e.g.
-# postgresql://user:pass@ep-xxx-pooler.region.aws.neon.tech/neondb?sslmode=require)
+
+# Database: Neon Postgres pooled connection string.
 DATABASE_URL=""
 
-# Public base URL of the auth handler, including the `/api` base path.
-# Local: http://localhost:8787/api/auth - Production: https://api.example.com/api/auth
+# Authentication: local auth URL, random secret, and optional Google OAuth credentials.
 BETTER_AUTH_URL="http://localhost:8787/api/auth"
-
-# 32+ random chars: `openssl rand -base64 32`
 BETTER_AUTH_SECRET=""
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
 
-# Frontend origin allowed to send credentialed requests.
+# Frontend and application settings.
 WEB_ORIGIN="http://localhost:3000"
+APP_NAME="Website Edukasi Anti Narkoba"
 
 # OpenAPI server URL. Defaults to "/api".
-# SERVER_API_URL="https://api.example.com/api"
+SERVER_API_URL="/api"
 
-# OpenRouter (https://openrouter.ai/keys). Tanpa kunci ini chatbot memakai jawaban fallback.
-OPENROUTER_API_KEY=""
-OPENROUTER_MODEL="google/gemma-4-31b-it:free"
+# Public API origin used by chatbot GET tools. Set to deployed backend origin in production.
+CHAT_API_ORIGIN="http://localhost:8787"
 
-# Dipakai oleh `bun run db:seed` untuk membuat akun admin pertama.
+# Chatbot: OpenAI-compatible API. Defaults to OpenRouter and fallback answers without a key.
+OPENAI_COMPATIBLE_API_KEY=""
+OPENAI_COMPATIBLE_MODEL="google/gemma-4-31b-it:free"
+OPENAI_COMPATIBLE_BASE_URL="https://openrouter.ai/api/v1"
+
+# Seed admin settings for `bun run db:seed`.
 SEED_ADMIN_EMAIL="admin@wuod.local"
 SEED_ADMIN_PASSWORD="Admin12345!"
 SEED_ADMIN_NAME="Administrator WUOD"

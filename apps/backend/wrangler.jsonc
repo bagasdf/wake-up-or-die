@@ -16,7 +16,7 @@
   "vars": {
     "APP_NAME": "Website Edukasi Anti Narkoba",
     "WEB_ORIGIN": "http://localhost:3000",
-    "OPENROUTER_MODEL": "google/gemma-4-31b-it:free",
+    "OPENAI_COMPATIBLE_MODEL": "google/gemma-4-31b-it:free",
   },
   "r2_buckets": [
     {

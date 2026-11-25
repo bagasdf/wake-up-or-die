@@ -194,12 +194,14 @@
     "retry": "Coba lagi"
   },
   "chat": {
-    "title": "chatbot ai 24/7",
+    "title": "Chatbot AI 24/7",
     "subtitle": "Tanya apa saja soal gejala awal adiksi dan langkah bantuan.",
     "placeholder": "Tulis pesan…",
     "send": "Kirim",
     "empty": "Belum ada pesan.",
     "error": "Gagal mengirim pesan.",
+    "thinking": "Sedang berpikir…",
+    "searching": "Mencari info…",
     "welcome": "Halo, aku asisten edukasi. Ceritakan apa yang kamu alami.",
     "disclaimer": "Jawaban AI bukan pengganti nasihat medis."
   },
