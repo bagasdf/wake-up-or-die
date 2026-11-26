@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { describeRoute } from "hono-openapi";
 import { z } from "zod";
 
@@ -12,9 +12,11 @@ import {
   userBadges,
 } from "@/db/schema";
 import { currentUser, requireUser } from "@/lib/guards";
-import { fail, ok, paginated, pagination } from "@/lib/http";
-import { commonErrorResponses, errorResponse, jsonResponse } from "@/lib/openapi";
-import { getUserStats } from "@/lib/points";
+import { anonymousKey, fail, ok, paginated, pagination } from "@/lib/http";
+import { newCertificateCode } from "@/lib/certificate";
+import { hashQuizRecoveryToken } from "@/lib/quiz-recovery";
+import { commonErrorResponses, jsonResponse } from "@/lib/openapi";
+import { awardPoints, getUserStats, syncBadges } from "@/lib/points";
 import { jsonBody } from "@/lib/validate";
 import { createHono } from "@/router/app";
 
@@ -44,6 +46,95 @@ function progressFor(
 }
 
 const router = createHono()
+  .post("/claim-quiz-progress", requireUser, async (c) => {
+    const token = anonymousKey(c);
+    if (!token) return fail(c, 400, "Token pemulihan kuis tidak valid.");
+
+    const me = currentUser(c);
+    const tokenHash = await hashQuizRecoveryToken(c.env.BETTER_AUTH_SECRET, token);
+    const db = c.get("db");
+
+    await db
+      .update(quizAttempts)
+      .set({ userId: me.id })
+      .where(and(isNull(quizAttempts.userId), eq(quizAttempts.sessionKey, tokenHash)));
+
+    const attempts = await db
+      .select({
+        quizId: quizAttempts.quizId,
+        score: quizAttempts.score,
+        correctCount: quizAttempts.correctCount,
+        totalQuestions: quizAttempts.totalQuestions,
+        passed: quizAttempts.passed,
+      })
+      .from(quizAttempts)
+      .where(
+        and(
+          eq(quizAttempts.userId, me.id),
+          eq(quizAttempts.sessionKey, tokenHash),
+        ),
+      );
+
+    if (attempts.length === 0) return ok(c, { claimedAttempts: 0, certificatesIssued: 0 });
+
+    const quizIds = [...new Set(attempts.map((attempt) => attempt.quizId))];
+    const quizRows = await db
+      .select({ id: quizzes.id, title: quizzes.title })
+      .from(quizzes)
+      .where(inArray(quizzes.id, quizIds));
+    let certificatesIssued = 0;
+
+    for (const quiz of quizRows) {
+      const quizAttemptsForUser = attempts.filter((attempt) => attempt.quizId === quiz.id);
+      await awardPoints(db, me.id, "quiz_complete", { type: "quiz", id: quiz.id });
+
+      const passedAttempts = quizAttemptsForUser.filter((attempt) => attempt.passed);
+      if (passedAttempts.length === 0) continue;
+
+      await awardPoints(db, me.id, "quiz_pass", { type: "quiz", id: quiz.id });
+      const bestAttempt = passedAttempts.reduce((best, attempt) =>
+        attempt.score > best.score ? attempt : best,
+      );
+      const [certificate] = await db
+        .insert(certificates)
+        .values({
+          code: newCertificateCode(),
+          userId: me.id,
+          type: "quiz",
+          refId: quiz.id,
+          title: quiz.title,
+          recipientName: me.name,
+          metadata: {
+            score: bestAttempt.score,
+            correctCount: bestAttempt.correctCount,
+            totalQuestions: bestAttempt.totalQuestions,
+          },
+        })
+        .onConflictDoNothing()
+        .returning({ id: certificates.id });
+
+      if (certificate) {
+        certificatesIssued += 1;
+        await awardPoints(db, me.id, "certificate_issued", {
+          type: "certificate",
+          id: certificate.id,
+        });
+      }
+    }
+
+    await syncBadges(db, me.id);
+    await db
+      .update(quizAttempts)
+      .set({ sessionKey: null })
+      .where(
+        and(
+          eq(quizAttempts.userId, me.id),
+          eq(quizAttempts.sessionKey, tokenHash),
+        ),
+      );
+
+    return ok(c, { claimedAttempts: attempts.length, certificatesIssued });
+  })
   .get(
     "/",
     describeRoute({

@@ -10,6 +10,7 @@ import {
   quizzes,
 } from "@/db/schema";
 import { newCertificateCode } from "@/lib/certificate";
+import { hashQuizRecoveryToken } from "@/lib/quiz-recovery";
 import { anonymousKey, created, fail, ipFingerprint, ok } from "@/lib/http";
 import { commonErrorResponses, errorResponse, jsonResponse } from "@/lib/openapi";
 import { awardPoints, getUserStats, syncBadges } from "@/lib/points";
@@ -272,7 +273,13 @@ const router = createHono()
       const totalQuestions = questions.length;
       const score = Math.round((correctCount / totalQuestions) * 100);
       const passed = score >= quiz.passScore;
-      const sessionKey = user ? null : anonymousKey(c);
+      const recoveryToken = user ? null : anonymousKey(c);
+      if (!user && !recoveryToken) {
+        return fail(c, 400, "Kunci pemulihan kuis tidak tersedia. Muat ulang halaman lalu coba lagi.");
+      }
+      const sessionKey = recoveryToken
+        ? await hashQuizRecoveryToken(c.env.BETTER_AUTH_SECRET, recoveryToken)
+        : null;
 
       const [attempt] = await db
         .insert(quizAttempts)

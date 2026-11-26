@@ -4,6 +4,10 @@ import { ArrowDown, Medal, Scroll, Target } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { apiJson } from "@/lib/api";
 import { useTranslations } from "@/lib/i18n";
+import {
+  clearQuizRecoveryToken,
+  getQuizRecoveryToken,
+} from "@/lib/quiz-recovery";
 
 type Me = {
   user: { name: string | null; email: string; createdAt: string };
@@ -33,17 +37,32 @@ export function Profile() {
 
   useEffect(() => {
     let alive = true;
-    apiJson<Me>("/api/me")
-      .then((data) => {
-        if (alive) {
-          if (!data?.user) throw new Error("Invalid profile response");
-          setMe(data);
-          setFullName(data.user.name ?? "");
+    const loadProfile = async () => {
+      const recoveryToken = getQuizRecoveryToken();
+      if (recoveryToken) {
+        try {
+          await apiJson("/api/me/claim-quiz-progress", {
+            method: "POST",
+            headers: { "x-session-key": recoveryToken },
+          });
+          clearQuizRecoveryToken();
+        } catch {
+          // Keep the token for a retry if claim fails.
         }
-      })
-      .catch(() => {
+      }
+
+      try {
+        const data = await apiJson<Me>("/api/me");
+        if (!alive) return;
+        if (!data?.user) throw new Error("Invalid profile response");
+        setMe(data);
+        setFullName(data.user.name ?? "");
+      } catch {
         if (alive) setError(true);
-      });
+      }
+    };
+
+    void loadProfile();
     return () => {
       alive = false;
     };

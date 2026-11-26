@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { apiJson } from "@/lib/api";
 import { useTranslations } from "@/lib/i18n";
+import { getOrCreateQuizRecoveryToken } from "@/lib/quiz-recovery";
 
 type Option = { id: string; label: string };
 type Question = { id: string; prompt: string; options: Option[] };
@@ -63,9 +64,19 @@ export function QuizPlayer({ slug }: { slug: string }) {
       return;
     }
     setPhase("sending");
+    let recoveryToken: string;
+    try {
+      recoveryToken = getOrCreateQuizRecoveryToken();
+    } catch {
+      setPhase("error");
+      return;
+    }
     apiJson<QuizResult>(`/api/quizzes/${slug}/attempts`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: {
+        "content-type": "application/json",
+        "x-session-key": recoveryToken,
+      },
       body: JSON.stringify({
         answers: questions.map((q) => ({
           questionId: q.id,
@@ -136,8 +147,8 @@ export function QuizPlayer({ slug }: { slug: string }) {
             <div className="mt-6 rounded-xl border border-border p-5">
               <p className="font-semibold">Masuk untuk menerima sertifikat.</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Setelah masuk, ulangi kuis ini agar sertifikat tersimpan di
-                dasbormu.
+                Setelah masuk, progres dan sertifikatmu akan tersimpan otomatis
+                di dasbor. Kamu tidak perlu mengulang kuis.
               </p>
               <Link
                 href="/login?returnTo=/me"
