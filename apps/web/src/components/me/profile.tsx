@@ -23,7 +23,12 @@ type Me = {
     passed: boolean;
     completedAt: string;
   }>;
-  recentCertificates: Array<{ code: string; title: string; issuedAt: string }>;
+  recentCertificates: Array<{
+    code: string;
+    title: string;
+    recipientName: string;
+    issuedAt: string;
+  }>;
 };
 
 export function Profile() {
@@ -34,6 +39,12 @@ export function Profile() {
   const [fullName, setFullName] = useState("");
   const [savingName, setSavingName] = useState(false);
   const [nameMessage, setNameMessage] = useState<string | null>(null);
+  const [refreshingCertificate, setRefreshingCertificate] = useState<
+    string | null
+  >(null);
+  const [certificateMessage, setCertificateMessage] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     let alive = true;
@@ -86,11 +97,42 @@ export function Profile() {
         setFullName(updated.name);
         setEditingName(false);
         setNameMessage(
-          "Nama diperbarui. Sertifikat baru akan memakai nama ini.",
+          "Nama diperbarui. Sertifikat lama dapat diperbarui dari daftar sertifikat.",
         );
       })
       .catch(() => setNameMessage("Nama gagal disimpan. Coba lagi."))
       .finally(() => setSavingName(false));
+  };
+
+  const refreshCertificateName = async (code: string) => {
+    setRefreshingCertificate(code);
+    setCertificateMessage(null);
+    try {
+      const refreshed = await apiJson<{
+        code: string;
+        recipientName: string;
+      }>(`/api/certificates/${encodeURIComponent(code)}/refresh`, {
+        method: "POST",
+      });
+      setMe((current) =>
+        current
+          ? {
+              ...current,
+              recentCertificates: current.recentCertificates.map(
+                (certificate) =>
+                  certificate.code === refreshed.code
+                    ? { ...certificate, recipientName: refreshed.recipientName }
+                    : certificate,
+              ),
+            }
+          : current,
+      );
+      setCertificateMessage("Nama sertifikat diperbarui. Unduh ulang PDF-nya.");
+    } catch {
+      setCertificateMessage("Nama sertifikat gagal diperbarui. Coba lagi.");
+    } finally {
+      setRefreshingCertificate(null);
+    }
   };
 
   return (
@@ -237,6 +279,14 @@ export function Profile() {
                   ))}
                 </ul>
               )}
+              {certificateMessage ? (
+                <output
+                  className="mt-4 block text-sm text-muted-foreground"
+                  aria-live="polite"
+                >
+                  {certificateMessage}
+                </output>
+              ) : null}
             </div>
             <div className="rounded-[1.25rem] border p-6">
               <h2 className="font-heading text-lg font-semibold tracking-tight">
@@ -254,6 +304,18 @@ export function Profile() {
                       className="flex items-center justify-between py-3 text-sm"
                     >
                       <span className="truncate">{cert.title}</span>
+                      {cert.recipientName !== me.user.name ? (
+                        <button
+                          type="button"
+                          disabled={refreshingCertificate !== null}
+                          onClick={() => void refreshCertificateName(cert.code)}
+                          className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-medium text-primary hover:border-primary disabled:opacity-50"
+                        >
+                          {refreshingCertificate === cert.code
+                            ? "Memperbarui…"
+                            : "Perbarui nama"}
+                        </button>
+                      ) : null}
                       <a
                         href={`/api/certificates/${cert.code}/download`}
                         className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-medium text-primary hover:border-primary"

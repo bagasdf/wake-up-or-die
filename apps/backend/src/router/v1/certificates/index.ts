@@ -35,6 +35,42 @@ const router = createHono()
     },
   )
 
+  .post(
+    "/:code/refresh",
+    describeRoute({
+      tags: ["Certificates"],
+      summary: "Refresh certificate recipient name",
+      description:
+        "Updates the certificate name to the authenticated user's saved profile name.",
+      responses: {
+        ...commonErrorResponses,
+        200: jsonResponse("Certificate name refreshed"),
+        400: errorResponse("A full name is required"),
+        404: errorResponse("Certificate not found"),
+      },
+    }),
+    requireUser,
+    async (c) => {
+      const me = currentUser(c);
+      const recipientName = me.name?.trim();
+      if (!recipientName) return fail(c, 400, "Isi nama lengkap di profil terlebih dahulu.");
+
+      const [certificate] = await c
+        .get("db")
+        .update(certificates)
+        .set({ recipientName })
+        .where(
+          and(
+            eq(certificates.code, c.req.param("code")),
+            eq(certificates.userId, me.id),
+          ),
+        )
+        .returning({ code: certificates.code, recipientName: certificates.recipientName });
+
+      if (!certificate) return fail(c, 404, "Sertifikat tidak ditemukan.");
+      return ok(c, certificate);
+    },
+  )
   .get(
     "/:code",
     describeRoute({
@@ -115,7 +151,7 @@ const router = createHono()
 
       c.header("Content-Type", "application/pdf");
       c.header("Content-Disposition", `attachment; filename="${certificate.code}.pdf"`);
-      c.header("Cache-Control", "public, max-age=86400");
+      c.header("Cache-Control", "no-store");
       return c.body(new Uint8Array(pdf));
     },
   );

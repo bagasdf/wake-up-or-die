@@ -28,6 +28,8 @@ export function BadgesCatalog() {
   const [badges, setBadges] = useState<Badge[] | null>(null);
   const [certs, setCerts] = useState<Certificate[] | null>(null);
   const [authed, setAuthed] = useState(true);
+  const [refreshingCode, setRefreshingCode] = useState<string | null>(null);
+  const [refreshMessage, setRefreshMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -48,6 +50,30 @@ export function BadgesCatalog() {
       alive = false;
     };
   }, []);
+
+  const refreshCertificate = async (code: string) => {
+    setRefreshingCode(code);
+    setRefreshMessage(null);
+    try {
+      const result = await apiJson<{ code: string; recipientName: string }>(
+        `/api/certificates/${encodeURIComponent(code)}/refresh`,
+        { method: "POST" },
+      );
+      setCerts(
+        (current) =>
+          current?.map((cert) =>
+            cert.code === code
+              ? { ...cert, recipientName: result.recipientName }
+              : cert,
+          ) ?? current,
+      );
+      setRefreshMessage("Nama sertifikat diperbarui.");
+    } catch {
+      setRefreshMessage("Nama sertifikat gagal diperbarui. Coba lagi.");
+    } finally {
+      setRefreshingCode(null);
+    }
+  };
 
   return (
     <section className="mx-3 md:m-12 mb-6 rounded-[2rem] border px-8 py-12">
@@ -134,18 +160,41 @@ export function BadgesCatalog() {
                   })}
                 </span>
               </span>
-              <a
-                href={`/api/certificates/${cert.code}`}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium hover:border-primary/50"
-              >
-                {t("verify")}
-              </a>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs text-muted-foreground">
+                  {cert.recipientName}
+                </span>
+                <button
+                  type="button"
+                  disabled={refreshingCode !== null}
+                  onClick={() => void refreshCertificate(cert.code)}
+                  className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-primary hover:border-primary/50 disabled:opacity-50"
+                >
+                  {refreshingCode === cert.code
+                    ? "Memperbarui…"
+                    : "Perbarui nama"}
+                </button>
+                <a
+                  href={`/api/certificates/${cert.code}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium hover:border-primary/50"
+                >
+                  {t("verify")}
+                </a>
+              </div>
             </li>
           ))}
         </ul>
       )}
+      {refreshMessage ? (
+        <output
+          className="mt-4 block text-sm text-muted-foreground"
+          aria-live="polite"
+        >
+          {refreshMessage}
+        </output>
+      ) : null}
     </section>
   );
 }
