@@ -22,7 +22,7 @@
     "SEED_ADMIN_EMAIL": "admin@wuod.local",
     "SEED_ADMIN_NAME": "Administrator WUOD",
     "SERVER_API_URL": "/api",
-    "WEB_ORIGIN": "http://wuod.hexaa.sh",
+    "WEB_ORIGIN": "https://wuod.hexaa.sh",
   },
   "r2_buckets": [
     {
