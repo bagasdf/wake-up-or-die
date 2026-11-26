@@ -15,7 +15,7 @@
     "dev:vinext": "vite dev --port 3000",
     "build:vinext": "vite build",
     "start:vinext": "vite preview --port 3000",
-    "deploy:vinext": "vinext-cloudflare deploy"
+    "deploy:vinext": "cf deploy --prebuilt --force"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
