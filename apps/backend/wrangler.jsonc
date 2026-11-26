@@ -15,7 +15,7 @@
   },
   "vars": {
     "APP_NAME": "Website Edukasi Anti Narkoba",
-    "BETTER_AUTH_URL": "https://wuod-api.hexagonn.my.id/api/auth",
+    "BETTER_AUTH_URL": "https://wuod.hexaa.sh/api/auth",
     "CHAT_API_ORIGIN": "https://wuod-api.hexagonn.my.id",
     "OPENAI_COMPATIBLE_BASE_URL": "https://openrouter.ai/api/v1",
     "OPENAI_COMPATIBLE_MODEL": "nvidia/nemotron-3-ultra-550b-a55b:free",
